@@ -1,4 +1,4 @@
-**DNSENUM**
+**DNSENUM (Recommended)**
 dnsenum target.com \
   --enum \
   --dnsserver 8.8.8.8 \
@@ -6,7 +6,7 @@ dnsenum target.com \
   --timeout 5 \
   --noreverse \
   --private \
-  --subfile subdomains.txt \
+  -f subdomains.txt \
   -o dnsenum_target.xml
 
 **Fierce**
@@ -65,7 +65,7 @@ puredns bruteforce \
   --rate-limit 1000 \
   --write puredns.txt
 
-**FFUF**
+**FFUF (Web Application TCP/80 TCP/443**
 ffuf \
   -u https://target.com \
   -H "Host: FUZZ.target.com" \
