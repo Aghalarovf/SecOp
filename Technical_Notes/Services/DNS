@@ -43,6 +43,8 @@ dig MX example.com
 dig NS example.com
 dig TXT example.com
 dig axfr example.com @<IP>
+dig @1.1.1.1 domain.com
+dig +trace domain.com	
 
 # With nslookup
 nslookup
@@ -87,6 +89,7 @@ PowerDNS
 /var/log/named/
 /var/log/syslog
 Windows Event Logs (DNS Server)
+
 
 
 
