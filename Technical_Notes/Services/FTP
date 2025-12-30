@@ -27,10 +27,6 @@ nmap -p21 --script ftp-anon <IP>
 nc <IP> 21
 telnet <IP> 21
 
---------------------------------
-2. CONNECTING TO FTP
---------------------------------
-
 # Normal login
 ftp <IP>
 
@@ -41,13 +37,6 @@ ftp <IP> <PORT>
 ftp <IP>
 Username: anonymous
 Password: anonymous@domain.com
-
-# Passive mode (important for firewalls)
-passive
-
---------------------------------
-3. FTP COMMANDS (CLIENT SIDE)
---------------------------------
 
 help                # List commands
 status              # Connection status
@@ -64,10 +53,6 @@ rmdir <dir>          # Remove directory
 rename <old> <new>   # Rename file
 bye / quit            # Exit
 
---------------------------------
-4. FTP SERVER COMMANDS
---------------------------------
-
 USER <username>
 PASS <password>
 SYST
@@ -81,46 +66,19 @@ DELE <file>
 MKD <dir>
 RMD <dir>
 
---------------------------------
-5. BRUTE FORCE
---------------------------------
-
-# Hydra
 hydra -l <user> -P passwords.txt ftp://<IP>
-
 hydra -L users.txt -P passwords.txt ftp://<IP>
-
-# Medusa
 medusa -h <IP> -u <user> -P passwords.txt -M ftp
 
---------------------------------
-6. FTP BOUNCE ATTACK
---------------------------------
-
-# Check bounce support
 nmap -b <user>:<pass>@<FTP_IP> <TARGET_IP>
 
---------------------------------
-7. FILE DISCOVERY
---------------------------------
-
-# Download everything
 wget -r ftp://<IP>/
-
 wget -r ftp://anonymous:anonymous@<IP>/
-
---------------------------------
-8. LOG FILES (SERVER SIDE)
---------------------------------
 
 Common locations:
 - /var/log/vsftpd.log
 - /var/log/xferlog
 - /var/log/proftpd/
-
---------------------------------
-9. COMMON FTP SERVICES
---------------------------------
 
 vsftpd
 proftpd
@@ -128,12 +86,9 @@ pure-ftpd
 FileZilla Server
 Microsoft FTP Service
 
---------------------------------
-10. FTP EXPLOIT CHECK
---------------------------------
-
 searchsploit vsftpd
 searchsploit proftpd
 searchsploit ftp
+
 
 
