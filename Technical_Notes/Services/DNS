@@ -1,0 +1,83 @@
+==============================
+DNS (Domain Name System)
+Cheat Sheet – Professional
+==============================
+
+PORT:
+53/UDP – Queries
+53/TCP – Zone transfer / Large responses
+
+RFC:
+RFC 1034, RFC 1035
+
+Transport:
+UDP / TCP
+
+Purpose:
+Domain → IP resolution
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+# Basic DNS scan
+nmap -p53 <IP>
+nmap -p53 --script dns-* <IP>
+dig @<IP> version.bind CHAOS TXT
+
+nslookup example.com
+dig example.com
+nslookup example.com <IP>
+dig @<IP> example.com
+
+# Query types
+dig A example.com
+dig AAAA example.com
+dig MX example.com
+dig NS example.com
+dig TXT example.com
+dig axfr example.com @<IP>
+
+# With nslookup
+nslookup
+> server <IP>
+> ls example.com
+
+--------------------------------
+3. SUBDOMAIN ENUMERATION
+--------------------------------
+dnsenum example.com
+dnsrecon -d example.com
+dnsrecon -d example.com -t brt
+fierce --domain example.com
+
+dig -x <IP>
+dnsrecon -r 192.168.1.0/24
+dnsrecon -d example.com -D wordlist.txt -t brt
+gobuster dns -d example.com -w wordlist.txt
+
+A      – IPv4 address
+AAAA   – IPv6 address
+MX     – Mail servers
+NS     – Name servers
+TXT    – Text records
+CNAME  – Alias
+SOA    – Zone authority
+
+dig
+nslookup
+dnsenum
+dnsrecon
+fierce
+gobuster
+nmap
+
+BIND
+Microsoft DNS
+dnsmasq
+PowerDNS
+
+/var/log/named/
+/var/log/syslog
+Windows Event Logs (DNS Server)
+
