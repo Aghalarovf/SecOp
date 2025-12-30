@@ -1,1 +1,77 @@
+**DNSENUM**
+dnsenum target.com \
+  --enum \
+  --dnsserver 8.8.8.8 \
+  --threads 10 \
+  --timeout 5 \
+  --noreverse \
+  --private \
+  --subfile subdomains.txt \
+  -o dnsenum_target.xml
+
+**Fierce**
+fierce \
+  --domain target.com \
+  --dns-servers 1.1.1.1,8.8.8.8 \
+  --threads 10 \
+  --wide \
+  --connect \
+  --subdomains
+
+**DNSRECON**
+dnsrecon \
+  -d target.com \
+  -t std,brt,axfr \
+  -D /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt \
+  -n 1.1.1.1 \
+  --threads 10 \
+  -j dnsrecon_target.json
+
+**Amass**
+amass enum \
+  -d target.com \
+  -passive \
+  -dns-qps 20 \
+  -timeout 5 \
+  -o amass_passive.txt
+
+amass enum \
+  -d target.com \
+  -active -brute \
+  -w /usr/share/seclists/Discovery/DNS/dns-Jhaddix.txt \
+  -dns-qps 40 \
+  -o amass_active.txt
+
+**Sublist3r**
+sublist3r \
+  -d target.com \
+  -t 10 \
+  -o sublist3r.txt
+
+**Feroxbuster**
+feroxbuster \
+  -u https://target.com \
+  -w /usr/share/seclists/Discovery/Web-Content/raft-large-directories.txt \
+  -t 50 \
+  -x php,js,txt \
+  -o ferox.txt
+
+**PureDNS**
+puredns bruteforce \
+  /usr/share/seclists/Discovery/DNS/subdomains-top1million-110000.txt \
+  target.com \
+  --resolvers resolvers.txt \
+  --threads 200 \
+  --rate-limit 1000 \
+  --write puredns.txt
+
+**FFUF**
+ffuf \
+  -u https://target.com \
+  -H "Host: FUZZ.target.com" \
+  -w subdomains.txt \
+  -mc 200,301,302 \
+  -t 50 \
+  -o ffuf_vhost.json
+
 
