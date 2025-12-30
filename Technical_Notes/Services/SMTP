@@ -1,0 +1,122 @@
+=================================
+SMTP (Simple Mail Transfer Protocol)
+Cheat Sheet – Professional
+=================================
+
+PORTS:
+25   – SMTP (plain)
+465  – SMTPS (implicit TLS)
+587  – SMTP Submission (STARTTLS)
+
+RFC: RFC 5321
+Transport: TCP
+Auth: Optional (AUTH LOGIN / PLAIN)
+Encryption: None / STARTTLS / SSL
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+# Basic scan
+nmap -p25,465,587 -sC -sV <IP>
+
+# SMTP specific scripts
+nmap -p25 --script smtp-* <IP>
+
+# Check users
+nmap -p25 --script smtp-enum-users <IP>
+
+# Banner grab
+nc <IP> 25
+telnet <IP> 25
+
+--------------------------------
+2. SMTP MANUAL ENUMERATION
+--------------------------------
+
+# Connect
+nc <IP> 25
+openssl s_client -starttls smtp -connect <IP>:587
+
+# Identify server
+HELO test.com
+EHLO test.com
+
+# Server capabilities
+EHLO attacker.com
+
+HELO <domain>
+EHLO <domain>
+MAIL FROM:<email>
+RCPT TO:<email>
+DATA
+RSET
+VRFY <user>
+EXPN <list>
+NOOP
+QUIT
+
+# VRFY
+VRFY root
+VRFY admin
+VRFY user
+
+# RCPT TO trick
+MAIL FROM:<test@test.com>
+RCPT TO:<valid_user@domain.com>
+
+Response:
+- 250 / 252 → user exists
+- 550 → user not found
+
+# smtp-user-enum
+smtp-user-enum -M VRFY -U users.txt -t <IP> -m 20 -w 15
+smtp-user-enum -M RCPT -U users.txt -t <IP> -m 20 -w 15
+smtp-user-enum -M EXPN -U users.txt -t <IP> -m 20 -w 15
+
+MAIL FROM:<attacker@evil.com>
+RCPT TO:<victim@gmail.com>
+
+If accepted → OPEN RELAY (critical)
+
+# Nmap
+nmap -p25 --script smtp-open-relay <IP>
+
+MAIL FROM:<attacker@evil.com>
+RCPT TO:<victim@domain.com>
+DATA
+Subject: Test
+From: attacker@evil.com
+To: victim@domain.com
+
+Hello World
+QUIT
+
+EHLO test.com
+
+Common:
+AUTH LOGIN
+AUTH PLAIN
+AUTH CRAM-MD5
+
+hydra -l user@domain.com -P passwords.txt smtp://<IP>
+hydra -l user -P passwords.txt smtp://<IP>:587
+
+Postfix
+Exim
+Sendmail
+Microsoft Exchange SMTP
+qmail
+
+searchsploit smtp
+searchsploit exim
+searchsploit postfix
+searchsploit exchange smtp
+
+/var/log/mail.log
+/var/log/maillog
+/var/log/exim/mainlog
+/var/log/mail.err
+
+
+

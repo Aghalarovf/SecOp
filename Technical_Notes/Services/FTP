@@ -1,0 +1,94 @@
+==============================
+FTP (File Transfer Protocol)
+Cheat Sheet – Professional
+==============================
+
+PORT: 21/TCP
+RFC: RFC 959
+Transport: TCP
+Authentication: USER / PASS
+Modes: Active, Passive
+Encryption: None (FTP) | FTPS (TLS)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+# Nmap basic scan
+nmap -p21 -sC -sV <IP>
+
+# Aggressive FTP scripts
+nmap -p21 --script ftp-* <IP>
+
+# Check anonymous login
+nmap -p21 --script ftp-anon <IP>
+
+# Banner grabbing
+nc <IP> 21
+telnet <IP> 21
+
+# Normal login
+ftp <IP>
+
+# Specify port
+ftp <IP> <PORT>
+
+# Anonymous login
+ftp <IP>
+Username: anonymous
+Password: anonymous@domain.com
+
+help                # List commands
+status              # Connection status
+pwd                 # Print working directory
+ls / dir             # List files
+cd <dir>             # Change directory
+get <file>           # Download file
+mget <pattern>       # Download multiple files
+put <file>           # Upload file
+mput <pattern>       # Upload multiple files
+delete <file>        # Delete file
+mkdir <dir>          # Create directory
+rmdir <dir>          # Remove directory
+rename <old> <new>   # Rename file
+bye / quit            # Exit
+
+USER <username>
+PASS <password>
+SYST
+STAT
+PWD
+CWD <dir>
+LIST
+RETR <file>
+STOR <file>
+DELE <file>
+MKD <dir>
+RMD <dir>
+
+hydra -l <user> -P passwords.txt ftp://<IP>
+hydra -L users.txt -P passwords.txt ftp://<IP>
+medusa -h <IP> -u <user> -P passwords.txt -M ftp
+
+nmap -b <user>:<pass>@<FTP_IP> <TARGET_IP>
+
+wget -r ftp://<IP>/
+wget -r ftp://anonymous:anonymous@<IP>/
+
+Common locations:
+- /var/log/vsftpd.log
+- /var/log/xferlog
+- /var/log/proftpd/
+
+vsftpd
+proftpd
+pure-ftpd
+FileZilla Server
+Microsoft FTP Service
+
+searchsploit vsftpd
+searchsploit proftpd
+searchsploit ftp
+
+
+
