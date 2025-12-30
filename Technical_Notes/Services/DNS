@@ -20,6 +20,12 @@ Domain → IP resolution
 1. BASIC ENUMERATION
 --------------------------------
 
+**www.blog.example.com*
+www - host
+blog - subdomain
+example.com - Second Level Domain
+com - TLD
+
 # Basic DNS scan
 nmap -p53 <IP>
 nmap -p53 --script dns-* <IP>
@@ -80,4 +86,5 @@ PowerDNS
 /var/log/named/
 /var/log/syslog
 Windows Event Logs (DNS Server)
+
 
