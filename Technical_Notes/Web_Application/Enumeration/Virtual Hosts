@@ -1,1 +1,36 @@
+**FFUF**
+ffuf \
+  -u https://target.com \
+  -H "Host: FUZZ.target.com" \
+  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
+  -mc 200,301,302 \
+  -fs 0 \
+  -ac \
+  -t 50 \
+  -of json \
+  -o ffuf_vhost.json
 
+**Gobuster**
+gobuster vhost \
+  -u https://target.com \
+  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
+  --append-domain \
+  -t 50 \
+  -o gobuster_vhost.txt
+
+**Feroxbuster**
+feroxbuster \
+  -u https://target.com \
+  -H "Host: FUZZ.target.com" \
+  -w /usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
+  -t 50 \
+  --auto-tune \
+  -o ferox_vhost.txt
+
+**WFUZZ**
+wfuzz \
+  -c \
+  -z file,/usr/share/seclists/Discovery/DNS/subdomains-top1million-20000.txt \
+  -H "Host: FUZZ.target.com" \
+  --hc 404 \
+  https://target.com
