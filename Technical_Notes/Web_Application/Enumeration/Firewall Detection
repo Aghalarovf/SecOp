@@ -1,1 +1,21 @@
+**Only Domain Scan**
+wafw00f https://target.com -v
+
+**Multi Domain Scan**
+cat domains.txt | while read d; do
+  echo "[*] Scanning $d"
+  wafw00f https://$d -v >> waf_results.txt
+done
+
+**Deep Scan**
+for i in {1..10}; do
+  wafw00f https://target.com
+done
+
+**Subdomain WAF Scanner**
+for sub in $(cat subs.txt); do
+  wafw00f https://$sub.target.com | grep -E "is behind|No WAF"
+done
+
+
 
