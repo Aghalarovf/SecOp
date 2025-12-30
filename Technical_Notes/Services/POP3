@@ -1,0 +1,69 @@
+==============================
+POP3 (Post Office Protocol v3)
+Cheat Sheet – Professional
+==============================
+
+PORTS:
+110/TCP – POP3 (plaintext)
+995/TCP – POP3S (SSL/TLS)
+
+Transport:
+TCP
+
+Purpose:
+Email retrieval protocol
+(Client ↔ Mail Server)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p110,995 -sV <IP>
+nmap -p110 --script pop3-* <IP>
+nmap --script pop3-ntlm-info -p110 <IP>
+nmap -p995 --script ssl-cert,ssl-enum-ciphers <IP>
+
+nc <IP> 110
+telnet <IP> 110
+openssl s_client -connect <IP>:995
+
+USER <username>
+PASS <password>
+
+STAT            # Mail count and size
+LIST            # List messages
+RETR 1          # Read message #1
+DELE 1          # Delete message #1
+QUIT            # Exit session
+
+hydra -l user -P passwords.txt pop3://<IP>
+hydra -L users.txt -P passwords.txt pop3://<IP>
+hydra -l user -P passwords.txt pop3s://<IP> -s 995
+
+Common usernames:
+admin
+test
+info
+support
+user
+mail
+backup
+
+# Plaintext capture
+tcpdump -i eth0 port 110 -A
+
+Wireshark filter:
+pop || tcp.port == 110
+
+Dovecot
+Courier
+Microsoft Exchange
+hMailServer
+Postfix (POP3 backend)
+
+use auxiliary/scanner/pop3/pop3_login
+use auxiliary/scanner/pop3/pop3_version
+
+Linux:
+ /var/log/mail.log
+ /var/log/maillog
