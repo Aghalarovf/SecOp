@@ -30,10 +30,6 @@ nmap -p25 --script smtp-enum-users <IP>
 nc <IP> 25
 telnet <IP> 25
 
---------------------------------
-2. SMTP MANUAL ENUMERATION
---------------------------------
-
 # Connect
 nc <IP> 25
 openssl s_client -starttls smtp -connect <IP>:587
@@ -117,6 +113,7 @@ searchsploit exchange smtp
 /var/log/maillog
 /var/log/exim/mainlog
 /var/log/mail.err
+
 
 
 
