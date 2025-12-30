@@ -53,6 +53,7 @@ nslookup
 3. SUBDOMAIN ENUMERATION
 --------------------------------
 dnsenum example.com
+dnsenum --dnsserver <IP> --enum -p 0 -s 0 -f wordlist <DOMAIN> --threads 20
 dnsrecon -d example.com
 dnsrecon -d example.com -t brt
 fierce --domain example.com
@@ -86,5 +87,6 @@ PowerDNS
 /var/log/named/
 /var/log/syslog
 Windows Event Logs (DNS Server)
+
 
 
