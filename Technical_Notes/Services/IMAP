@@ -1,0 +1,72 @@
+==============================
+IMAP (Internet Message Access Protocol)
+Cheat Sheet – Professional
+==============================
+
+PORTS:
+143/TCP – IMAP (plain)
+993/TCP – IMAPS (SSL/TLS)
+
+RFC:
+RFC 3501
+
+Transport:
+TCP
+
+Authentication:
+LOGIN / AUTHENTICATE
+
+Purpose:
+Remote mail access & mailbox management
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p143,993 -sC -sV <IP>
+nmap -p143 --script imap-* <IP>
+nmap -p993 --script imap-* <IP>
+
+nc <IP> 143
+openssl s_client -connect <IP>:993
+
+a LOGIN user password
+a LIST "" "*"
+a SELECT INBOX
+a FETCH 1 BODY[]
+a FETCH 1 BODY[HEADER]
+a SEARCH ALL
+a SEARCH FROM "admin"
+a SEARCH SUBJECT "password"
+a FETCH <ID> BODY[]
+a FETCH <ID> ALL
+a LOGOUT
+
+curl -k 'imaps://<IP>' --user user:password -v
+
+hydra -l user -P passwords.txt imap://<IP>
+hydra -l user -P passwords.txt imaps://<IP>
+medusa -h <IP> -u user -P passwords.txt -M imap
+
+a LIST "" "*"
+INBOX
+Sent
+Drafts
+Trash
+Junk
+Spam
+
+# Fetch headers
+a FETCH 1:* BODY[HEADER]
+
+# Fetch full email
+a FETCH 1 BODY[]
+
+Dovecot
+Courier
+Microsoft Exchange IMAP
+UW IMAP
+
+/var/log/mail.log
+/var/log/maillog
+/var/log/auth.log
