@@ -50,6 +50,7 @@ smbmap -H <IP> -u user -p pass -R
 # Connect to share
 smbclient //<IP>/<share> -N
 smbclient //<IP>/<share> -U user
+smbclient -L //<IP>/<share> -U user
 
 crackmapexec smb <IP>
 crackmapexec smb <IP> -u user -p pass
@@ -101,3 +102,4 @@ nmap
 impacket (psexec, wmiexec, smbexec)
 metasploit
 s check NULL session first
+
