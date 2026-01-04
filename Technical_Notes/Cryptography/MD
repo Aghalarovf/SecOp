@@ -1,1 +1,2 @@
 
+echo -n Soccer06! | md5sum
