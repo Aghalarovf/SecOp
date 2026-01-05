@@ -1,1 +1,76 @@
 
+hashcat --help
+
+32 hex        → MD5            → -m 0
+40 hex        → SHA1           → -m 100
+64 hex        → SHA256         → -m 1400
+128 hex       → SHA512         → -m 1700
+32 hex        → NTLM           → -m 1000
+LM (split)   → LM             → -m 3000
+$1$           → md5crypt       → -m 500
+$5$           → sha256crypt    → -m 7400
+$6$           → sha512crypt    → -m 1800
+MySQL < 5.7   → mysql323       → -m 200
+MySQL 5.x    → mysqlSHA1      → -m 300
+PostgreSQL   → md5(user+pass) → -m 10
+
+
+hash-identifier <HASH>
+
+# Hash növünü avtomatik tanı (təxmini)
+hashcat --identify hash.txt
+
+# Wordlist attack (əsas)
+hashcat -m <MODE> -a 0 hash.txt rockyou.txt
+
+hashcat -m <MODE> -a 0 hash.txt rockyou.txt -r /usr/share/hashcat/rules/best64.rule
+hashcat -m <MODE> -a 0 hash.txt rockyou.txt -r /usr/share/hashcat/rules/d3ad0ne.rule
+
+# Mask attack
+hashcat -m <MODE> -a 3 hash.txt ?l?l?l?l?d?d
+hashcat -m <MODE> -a 3 hash.txt ?a?a?a?a?a?a
+hashcat -m <MODE> -a 6 hash.txt rockyou.txt ?d?d
+hashcat -m <MODE> -a 7 hash.txt ?d?d rockyou.txt
+
+| Simvol | Mənası              |
+| ------ | ------------------- |
+| `?l`   | kiçik hərflər (a–z) |
+| `?u`   | böyük hərflər (A–Z) |
+| `?d`   | rəqəmlər (0–9)      |
+| `?s`   | xüsusi simvollar    |
+| `?a`   | hamısı (l+u+d+s)    |
+| `?h`   | hex (0–9 a–f)       |
+| `?H`   | HEX (0–9 A–F)       |
+
+1) ?u?l?l?l?l?d?s            (Mouse5! tərzli)
+2) ?l?l?l?l?l?l              (6 kiçik hərf)
+3) ?l?l?l?l?l?l?l?l          (8 kiçik hərf)
+4) ?l?l?l?l?l?l?d            (sonu 1 rəqəm)
+5) ?l?l?l?l?l?l?d?d          (sonu 2 rəqəm)
+6) ?u?l?l?l?l?d?d            (Admin12)
+7) ?u?l?l?l?l?l?d?d          (Admin123)
+8) ?u?l?l?l?l?l?d?d?d
+9) ?u?l?l?l?l?l?l
+10) ?u?l?l?l?l?l?l?l
+11) ?u?l?l?l?l?l?d
+12) ?l?l?l?l?d?d
+13) ?l?l?l?l?l?d?d
+14) ?l?l?l?l?l?l?d?d
+
+
+
+hashcat --restore
+hashcat --status
+# Crack olunmuş parolları göstər
+hashcat -m <MODE> --show hash.txt
+hashcat -m <MODE> -a 0 hash.txt rockyou.txt --session=myjob
+hashcat --restore --session=myjob
+hashcat -m <MODE> -a 0 hash.txt rockyou.txt -o cracked.txt
+hashcat -D 1 -m <MODE> -a 0 hash.txt rockyou.txt
+hashcat -D 2 -m <MODE> -a 0 hash.txt rockyou.txt
+hashcat -w 2 -m <MODE> -a 0 hash.txt rockyou.txt
+
+# Force (yalnız problem olduqda)
+hashcat --force
+
+==============================
