@@ -1,1 +1,18 @@
+cewl https://target.com ( Normal Creator )
+cewl https://target.com -w words.txt
+cewl https://target.com -d 2 -w words.txt
+cewl https://target.com -d 3 -m 5 -w words.txt
+cewl https://target.com --email -w emails.txt ( Email Collector )
+cewl https://target.com --email | cut -d@ -f1 > users.txt ( Username Collector )
+cewl https://target.com -a "Mozilla/5.0" -w words.txt ( Anti Bot )
+cewl https://target.com --delay 3 -w words.txt
+cewl https://target.com --lowercase -w words.txt
+cewl https://target.com --with-numbers -w words.txt
+cewl https://target.com -d 3 -m 6 --lowercase --with-numbers -w words.txt
+cewl https://target.com -d 2 --allowed offsite -w words.txt
+cewl https://target.com --exclude css,js,png,jpg -w words.txt
+cewl https://target.com -v
+cewl https://target.com -d 3 -m 5 --email --with-numbers --lowercase -w final.txt
+
+
 
