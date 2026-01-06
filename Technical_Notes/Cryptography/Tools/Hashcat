@@ -20,6 +20,14 @@ hash-identifier <HASH>
 # Hash növünü avtomatik tanı (təxmini)
 hashcat --identify hash.txt
 
+hashcat -a <MODS>
+-a 0 Wordlist Attack  (hashcat -a 0 -m 1000 hash.txt rockyou.txt)
+-a 1 Wordlists Combination  (hashcat -a 1 -m 1000 hash.txt words1.txt words2.txt)
+-a 3 Mask Attack  (hashcat -a 3 -m 1000 hash.txt ?u?l?l?l?d?d)
+-a 6 Hybrid Wordlist + Mask  (hashcat -a 6 -m 1000 hash.txt rockyou.txt ?d?d)
+-a 7 Hybrid Mask + Wordlist  (hashcat -a 7 -m 1000 hash.txt ?u?l?l rockyou.txt)
+
+
 # Wordlist attack (əsas)
 hashcat -m <MODE> -a 0 hash.txt rockyou.txt
 
