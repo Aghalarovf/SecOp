@@ -27,8 +27,12 @@ hashcat -a <MODS>
 -a 6 Hybrid Wordlist + Mask  (hashcat -a 6 -m 1000 hash.txt rockyou.txt ?d?d)
 -a 7 Hybrid Mask + Wordlist  (hashcat -a 7 -m 1000 hash.txt ?u?l?l rockyou.txt)
 
-
-# Wordlist attack (əsas)
+hashcat -m <hash_type> -a 0 hashes.txt wordlist.txt
+hashcat -m <hash_type> -a 1 hashes.txt wordlist1.txt wordlist2.txt
+hashcat -m <hash_type> -a 3 hashes.txt ?u?l?l?l?d?d
+hashcat -m <hash_type> -a 6 hashes.txt wordlist.txt ?d?s?s
+hashcat -m <hash_type> -a 7 hashes.txt ?u?l?l?l wordlist.txt
+hashcat -m <hash_type> -a 9 hashes.txt
 hashcat -m <MODE> -a 0 hash.txt rockyou.txt
 
 hashcat -m <MODE> -a 0 hash.txt rockyou.txt -r /usr/share/hashcat/rules/best64.rule
@@ -50,6 +54,93 @@ hashcat -m <MODE> -a 7 hash.txt ?d?d rockyou.txt
 | `?h`   | hex (0–9 a–f)       |
 | `?H`   | HEX (0–9 A–F)       |
 
+Rule:
+:        → Sözü dəyişmədən olduğu kimi saxlayır
+c        → İlk hərfi böyük edir (capitalize)
+u        → Bütün hərfləri böyük edir (uppercase)
+l        → Bütün hərfləri kiçik edir (lowercase)
+t        → Hərflərin böyük/kiçik vəziyyətini tərsinə çevirir
+$1       → Sözün sonuna "1" əlavə edir
+$!       → Sözün sonuna "!" əlavə edir
+$@       → Sözün sonuna "@" əlavə edir
+$?       → Sözün sonuna "?" əlavə edir
+$2024    → Sözün sonuna "2024" əlavə edir
+$2025    → Sözün sonuna "2025" əlavə edir
+^1       → Sözün əvvəlinə "1" əlavə edir
+^!       → Sözün əvvəlinə "!" əlavə edir
+^@       → Sözün əvvəlinə "@" əlavə edir
+D0       → Sözün ilk simvolunu silir
+D1       → Sözün ikinci simvolunu silir
+DN       → Sözün son simvolunu silir
+d        → Sözün bütün simvollarını silir
+p        → Sözü öz-özü ilə birləşdirir (duplicate)
+f        → Sözü sola doğru bir simvol fırladır (rotate left)
+r        → Sözü sağa doğru bir simvol fırladır (rotate right)
+T0       → 0-cı indeksdəki simvolu böyük edir
+T1       → 1-ci indeksdəki simvolu böyük edir
+T2       → 2-ci indeksdəki simvolu böyük edir
+s a @    → "a" hərfini "@" ilə əvəz edir
+s e 3    → "e" hərfini "3" ilə əvəz edir
+
+Mutated Wordlist with Custom Rule:
+1)Make base wordlist --> base_word.txt
+
+2)echo ':\nc\nC\nt\nl\nf\nr\np\n\nso0\nc so0\nC so0\nt so0\nl so0\nf so0\nr so0\np so0\n\nsa@\nc sa@\nC sa@\nt sa@\nl sa@\nf sa@\nr sa@\np sa@\n\nc sa@ so0\nC sa@ so0\nt sa@ so0\nl sa@ so0\nf sa@ so0\nr sa@ so0\np sa@ so0\n\nc so0 sa@\nC so0 sa@\nt so0 sa@\nl so0 sa@\nf so0 sa@\nr so0 sa@\np so0 sa@\n\n$!\n$@\n$! c\n$@ c\n$! C\n$@ C\n$! t\n$@ t\n$! l\n$@ l\n$! f\n$@ f\n$! r\n$@ r\n$! p\n$@ p\n\n$! so0\n$@ so0\n$! sa@\n$@ sa@\n\n$! c so0\n$! C so0\n$! t so0\n$! l so0\n$! f so0\n$! r so0\n$! p so0\n\n$@ c so0\n$@ C so0\n$@ t so0\n$@ l so0\n$@ f so0\n$@ r so0\n$@ p so0\n\n$! c sa@\n$! C sa@\n$! t sa@\n$! l sa@\n$! f sa@\n$! r sa@\n$! p sa@\n\n$@ c sa@\n$@ C sa@\n$@ t sa@\n$@ l sa@\n$@ f sa@\n$@ r sa@\n$@ p sa@\n\n$! so0 sa@\n$! sa@ so0\n$@ so0 sa@\n$@ sa@ so0\n\n$! c so0 sa@\n$! C so0 sa@\n$! t so0 sa@\n$! l so0 sa@\n$! f so0 sa@\n$! r so0 sa@\n$! p so0 sa@\n\n$@ c so0 sa@\n$@ C so0 sa@\n$@ t so0 sa@\n$@ l so0 sa@\n$@ f so0 sa@\n$@ r so0 sa@\n$@ p so0 sa@\n' > custom.rule
+
+3)Combined:
+while read w1; do
+  while read w2; do
+    # normal
+    echo "${w1}${w2}"
+    # Ab
+    echo "$(echo "${w1}" | sed 's/^./\U&/')${w2}"
+    # aB
+    echo "${w1}$(echo "${w2}" | sed 's/^./\U&/')"
+    # AB
+    echo "$(echo "${w1}" | sed 's/^./\U&/')$(echo "${w2}" | sed 's/^./\U&/')"
+  done < base_word.txt
+done < base_word.txt > combined_2.txt
+
+
+4)Combined:
+while read w1; do
+  while read w2; do
+    while read w3; do
+      # 0 uppercase
+      echo "${w1}${w2}${w3}"
+      # 1 uppercase
+      echo "$(echo "$w1" | sed 's/^./\U&/')${w2}${w3}"
+      echo "${w1}$(echo "$w2" | sed 's/^./\U&/')${w3}"
+      echo "${w1}${w2}$(echo "$w3" | sed 's/^./\U&/')"
+      # 2 uppercase
+      echo "$(echo "$w1" | sed 's/^./\U&/')$(echo "$w2" | sed 's/^./\U&/')${w3}"
+      echo "$(echo "$w1" | sed 's/^./\U&/')${w2}$(echo "$w3" | sed 's/^./\U&/')"
+      echo "${w1}$(echo "$w2" | sed 's/^./\U&/')$(echo "$w3" | sed 's/^./\U&/')"
+      # 3 uppercase (ən vacib pattern)
+      echo "$(echo "$w1" | sed 's/^./\U&/')$(echo "$w2" | sed 's/^./\U&/')$(echo "$w3" | sed 's/^./\U&/')"
+    done < base_word.txt
+  done < base_word.txt
+done < base_word.txt > combined_3.txt
+
+
+5)cat base_word.txt combined_3.txt combined_2.txt > all_combined.txt
+
+6)sort -u all_combined.txt > all_combined_uniq.txt
+
+7)hashcat -r custom.rule base_word.txt --stdout > mut1.txt
+
+8)hashcat -r custom.rule combined_2.txt --stdout > mut2.txt
+
+9)hashcat -r custom.rule combined_3.txt --stdout > mut3.txt
+
+10)hashcat -r custom.rule all_combined_uniq.txt --stdout > mut_final.txt
+
+11)cat all_combined_uniq.txt combined_2.txt combined_3.txt base_word.txt mut1.txt mut2.txt mut3.txt mut_final.txt | sort -u > mut_password.list
+
+12)cat mut_password.list | awk 'length($0) >= 8 && length($0) <= 20' > final.list
+
+
+
 1) ?u?l?l?l?l?d?s            (Mouse5! tərzli)
 2) ?l?l?l?l?l?l              (6 kiçik hərf)
 3) ?l?l?l?l?l?l?l?l          (8 kiçik hərf)
@@ -64,6 +155,7 @@ hashcat -m <MODE> -a 7 hash.txt ?d?d rockyou.txt
 12) ?l?l?l?l?d?d
 13) ?l?l?l?l?l?d?d
 14) ?l?l?l?l?l?l?d?d
+
 
 
 
