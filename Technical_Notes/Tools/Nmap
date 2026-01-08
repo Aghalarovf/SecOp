@@ -1,0 +1,59 @@
+**Full Service Scanning**
+nmap -p- -T4 --min-rate 1000 -Pn -oA All_Port <IP>
+
+nmap -sC -sV -p[port] \
+--version-intensity 9 \
+-oA service_enum <IP>
+
+**Web Focus Deep Enumeration**
+nmap -p80,443 \
+--script=http-enum,http-title,http-headers,http-methods,http-robots.txt \
+-oA web_enum <IP>
+
+**SMB/Windows/AD Enumeration**
+nmap -p445 \
+--script=smb-os-discovery,smb-enum-shares,smb-enum-users,smb-security-mode \
+-oA smb_enum <IP>
+
+--script=ftp-anon,ssh-auth-methods,vuln
+
+**Firewall Bypass + Enterprise Environment**
+nmap -sn -Pn <IP> ( Without ICMP )
+nmap -sn -PS80,443 10.0.0.0/16 ( SYN Request )
+nmap -sn -PA80,443 <IP> ( ACK Scan )
+nmap -sn -PR <IP> ( ARP Scan )
+
+nmap -sn -T2 --max-retries 1 --host-timeout 10s <IP> -oA host_discovery_stealth
+
+**GOLD STANDART**
+
+nmap -sn -PS80,443 -PA80,443 -PU53,123 \
+--min-rate 300 -T3 <IP> -oA enterprise_enum
+
+**Script Format**
+
+--script auth ( Anon login, Default Credential )
+--script broadcast ( Broadcast Scan )
+--script brute ( Brute Force )
+--script discovery ( Banner, OS Info, Services, Shares, Users )
+--script version ( Version, Fingerprint )
+--script vuln ( CVE, CVSS scanning )
+--script firewall-bypass ( Firewall Bypass Script )
+
+-n ( Disabled DNS Resolution )
+-Pn ( Disabled ICMP Requests )
+-e ( Interface )
+
+--source-port [port]
+--disable-arp-ping ( Without ARP Packet )
+--packet-trace ( Packet Tracer )
+--reason ( Result Reasons )
+--initial-rtt-timeout [sec]
+--max-rtt-timeout [sec]
+--stats-every [sec]
+
+**DECOYS and Advanced Firewall Bypass**
+nmap -sS -D [IP1],[IP2],[IP3],ME [Main_IP]
+nmap -sS -D RND:5 
+
+
