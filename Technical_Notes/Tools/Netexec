@@ -10,6 +10,7 @@ netexec smb 10.10.10.5 -u user -p pass --shares
 
 netexec winrm 10.10.10.25 -u admin -p pass
 netexec winrm 10.10.10.25 -u admin -p pass -x "whoami"
+netexec winrm 10.129.202.136 -u username.list -p password.list
 
 netexec ldap dc_ip -u user -p pass
 netexec ldap dc_ip -u user -p pass --users
