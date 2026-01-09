@@ -1,20 +1,20 @@
 <img width="2480" height="1424" alt="image" src="https://github.com/user-attachments/assets/eccbf60f-57e1-44df-82e3-64c1ab4165fe" />
 
-1. Winlogon.exe
+1) Winlogon.exe
 Ctrl+Alt+Del dinləyir
 Doğrulama prosesini LSASS-ə ötürür
 
-2. LogonUI
+2) LogonUI
 Ekranda gördüyün login pəncərəsi
 Bu hissə yalnız məlumat toplayır, yoxlama etmir.
 
-3. Winlogon --> LSASS
+3) Winlogon --> LSASS
 lsass.exe (Local Security Authority Subsystem Service)
 Authentication paketlərini işlədir
 NTLM / Kerberos seçimlərini edir
 Local və ya Domain login olduğunu müəyyən edir
 
-4. Authentication Package
+4) Authentication Package
 A) Local / Non-Domain Joined (ev kompüteri)
 NTLM işə düşür ( msv1_0.dll )
 Parol → hash → müqayisə
@@ -31,6 +31,7 @@ Netlogon - Domain Controller ilə danışır, Secure channel yaradır
 Active Directory - ntds.dit içində user məlumatları var
 
 Kerberoasting, Golden Ticket, DC Sync buradan çıxır.
+
 
 
 
