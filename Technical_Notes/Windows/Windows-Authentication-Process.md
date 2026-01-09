@@ -40,7 +40,8 @@ a) LSASS RAM da işləyir. BitLocker qoruya bilmir.
 
 b) SYSTEM / Debug Privilege səlahiyyəti ilə Dump etmək olar. Normal User Dump mümkünsüzdür.
 
-Saxlanır:
+**Saxlanır:**
+
 NTLM Hashes
 
 Kerberos Tickets TGT/TGS
@@ -54,10 +55,14 @@ Security Tokens
 Credential Material
 
 
-Hücumlar:
+**Hücumlar:**
+
 Pass-the-Ticket
+
 Overpass-the-Hash
+
 Golden / Silver Ticket
+
 
 
 
