@@ -26,6 +26,7 @@ nmap --script rdp-ntlm-info -p3389 <IP>
 
 # Valid user check (NLA off)
 xfreerdp /v:<IP> /u:test /p:test
+remmina -c rdp://<IP>
 
 hydra -L users.txt -P passwords.txt rdp://<IP>
 crowbar -b rdp -s <IP>/32 -u user -C passwords.txt
@@ -51,3 +52,4 @@ hydra
 crowbar
 metasploit
 searchsploit
+
