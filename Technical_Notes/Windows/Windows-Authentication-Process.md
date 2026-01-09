@@ -14,7 +14,8 @@
  NTLM / Kerberos seçimlərini edir.
  Local və ya Domain login olduğunu müəyyən edir.
 
-4) Authentication Package -
+4) Authentication Package 
+
 A) Local / Non-Domain Joined (ev kompüteri) --> 
 NTLM işə düşür ( msv1_0.dll ) --> 
 Parol → hash → müqayisə --> 
@@ -31,6 +32,7 @@ Netlogon - Domain Controller ilə danışır, Secure channel yaradır
 Active Directory - ntds.dit içində user məlumatları var
 
 Kerberoasting, Golden Ticket, DC Sync buradan çıxır.
+
 
 
 
