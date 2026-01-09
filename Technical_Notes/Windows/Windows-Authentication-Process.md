@@ -34,17 +34,17 @@ Active Directory - ntds.dit içində user məlumatları var
 Kerberoasting, Golden Ticket, DC Sync buradan çıxır.
 
 
-## **LSASS ( Local Security Authority Subsystem Service )**
+# **LSASS ( Local Security Authority Subsystem Service )**
 
-# lsasrv.dll - lsasrv.exe
+### lsasrv.dll - lsasrv.exe
 
-# msv1_0.dll — NTLM mexanizmi
+### msv1_0.dll — NTLM mexanizmi
 
-# samsrv.dll — Local user database gatekeeper
+### samsrv.dll — Local user database gatekeeper
 
-# kerberos.dll — Domain autentifikasiyanın əsas yolu
+### kerberos.dll — Domain autentifikasiyanın əsas yolu
 
-# netlogon.dll — Client ↔ Domain Controller körpüsü
+### netlogon.dll — Client ↔ Domain Controller körpüsü
 
 a) LSASS RAM da işləyir. BitLocker qoruya bilmir. 
 
@@ -74,6 +74,7 @@ b) SYSTEM / Debug Privilege səlahiyyəti ilə Dump etmək olar. Normal User Dum
 2) Overpass-the-Hash
 
 3) Golden / Silver Ticket
+
 
 
 
