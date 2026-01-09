@@ -34,6 +34,27 @@ Active Directory - ntds.dit içində user məlumatları var
 Kerberoasting, Golden Ticket, DC Sync buradan çıxır.
 
 
+**LSASS ( Local Security Authority Subsystem Service )**
+
+a) LSASS RAM da işləyir. BitLocker qoruya bilmir. 
+b) SYSTEM / Debug Privilege səlahiyyəti ilə Dump etmək olar. Normal User Dump mümkünsüzdür.
+
+Saxlanır:
+NTLM Hashes
+Kerberos Tickets TGT/TGS
+Service Tickets
+Session Keys
+Security Tokens
+Credential Material
+
+Hücumlar:
+Pass-the-Ticket
+Overpass-the-Hash
+Golden / Silver Ticket
+
+
+
+
 
 
 
