@@ -36,15 +36,17 @@ Kerberoasting, Golden Ticket, DC Sync buradan çıxır.
 
 # **LSASS ( Local Security Authority Subsystem Service )**
 
-### lsasrv.dll - lsasrv.exe
+### lsasrv.dll - lsasrv.exe ( Authentication prosesinin əsas logic-i )
 
-### msv1_0.dll — NTLM mexanizmi
+### msv1_0.dll — NTLM mexanizmi ( NTLM authentication paketinin implementasiyası )
 
-### samsrv.dll — Local user database gatekeeper
+### samsrv.dll — Local user database gatekeeper ( SAM database ilə ünsiyyət )
 
-### kerberos.dll — Domain autentifikasiyanın əsas yolu
+### kerberos.dll — Domain autentifikasiyanın əsas yolu ( Kerberos authentication provider )
 
-### netlogon.dll — Client ↔ Domain Controller körpüsü
+### netlogon.dll — Client ↔ Domain Controller körpüsü ( Secure channel yaratmaq )
+
+### ntdsa.dll — Active Directory-nin ürəyi ( AD database engine )
 
 a) LSASS RAM da işləyir. BitLocker qoruya bilmir. 
 
@@ -74,6 +76,7 @@ b) SYSTEM / Debug Privilege səlahiyyəti ilə Dump etmək olar. Normal User Dum
 2) Overpass-the-Hash
 
 3) Golden / Silver Ticket
+
 
 
 
