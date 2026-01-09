@@ -1,0 +1,64 @@
+$1$ – MD5 crypt
+$2a$ – bcrypt
+$2b$ – bcrypt
+$2y$ – bcrypt
+$5$ – SHA-256 crypt
+$6$ – SHA-512 crypt
+$argon2i$ – Argon2
+$argon2id$ – Argon2
+
+hashid -j <HASH>
+
+*2john TYPES:
+1)zip2john file.zip > zip.hash
+john zip.hash
+
+2)rar2john file.rar > rar.hash
+john rar.hash
+
+3)ssh2john id_rsa > ssh.hash
+john ssh.hash
+
+4)pdf2john file.pdf > pdf.hash
+john pdf.hash
+
+
+
+john hash.txt
+john --wordlist=rockyou.txt hash.txt
+john --wordlist=rockyou.txt --rules hash.txt
+
+john --format=raw-md5 hash.txt
+john --format=sha512crypt hash.txt
+john --format=bcrypt hash.txt
+john --format=nt hash.txt
+
+# /etc/shadow crack
+unshadow passwd shadow > unshadowed.txt
+john unshadowed.txt
+
+john --single hash.txt
+john --incremental hash.txt
+john --mask='?l?l?l?d?d' hash.txt
+john --session=myjob hash.txt
+john --restore=myjob
+
+john --show hash.txt
+
+john --users=root hash.txt
+
+john --format=nt --wordlist=rockyou.txt ntlm.txt
+
+zip2john file.zip > zip.hash
+john zip.hash
+
+rar2john file.rar > rar.hash
+john rar.hash
+
+ssh2john id_rsa > ssh.hash
+john ssh.hash
+
+john --format=sha512crypt hash.txt
+john --status
+
+==============================
