@@ -78,6 +78,25 @@ b) SYSTEM / Debug Privilege səlahiyyəti ilə Dump etmək olar. Normal User Dum
 3) Golden / Silver Ticket
 
 
+# Windows Identity
+
+Windows Identity — bu, Windows sistemində aktiv istifadəçi hesabını və onun təhlükəsizlik məlumatlarını əks etdirən bir obyekt və ya konseptdir.
+
+- İstifadəçi adı (Username)
+
+- SID (Security Identifier) – unikal identifikator
+
+- İstifadəçi hansı qruplara aiddir
+
+- İstifadəçinin icazələri (Privileges)
+
+C#
+using System.Security.Principal;
+
+WindowsIdentity identity = WindowsIdentity.GetCurrent();
+Console.WriteLine("Username: " + identity.Name);
+Console.WriteLine("SID: " + identity.User.Value);
+
 
 
 
