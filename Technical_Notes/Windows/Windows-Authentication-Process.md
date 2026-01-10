@@ -90,7 +90,7 @@ Windows Identity — bu, Windows sistemində aktiv istifadəçi hesabını və o
 
 - İstifadəçinin icazələri (Privileges)
 
-C#
+**C# System.Security.Principal.WindowsIdentity Class**
 
 using System.Security.Principal;
 
@@ -99,9 +99,6 @@ WindowsIdentity identity = WindowsIdentity.GetCurrent();
 Console.WriteLine("Username: " + identity.Name);
 
 Console.WriteLine("SID: " + identity.User.Value);
-
-
-
 
 
 
