@@ -171,10 +171,8 @@ Select FullName
 Where-Object {$_.Name -match "pass|password"} |
 Select FullName
 
-11) Shared password files
+11) Full Credential Harvesting
 $patterns = "password","passwd","pwd","credential","token","apikey","secret"
-
-12) Full system password hunting
 Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue |
 Select-String -Pattern $patterns |
 Select Path, LineNumber, Line |
