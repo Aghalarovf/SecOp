@@ -1,1 +1,6 @@
+# FTP Server
 
+pip3 install pyftpdlib
+python3 -m pyftpdlib -p 21 -w ( Start FTP Server )
+ftp <IP> 
+Anonymous Login
