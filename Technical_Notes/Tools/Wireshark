@@ -1,1 +1,46 @@
+# NTLM Authentication
+
+ntlmssp
+ntlmssp.auth
+
+# Kerberos
+
+kerberos
+kerberos.msg_type == 10
+kerberos.msg_type == 12 AS-REQ (user enumeration üçün)
+
+# LDAP
+
+ldap
+ldap.bindRequest
+
+# SMB
+
+smb || smb2
+smb2.cmd == 1
+smb2.cmd == 5 SMB Negotiate (signing disabled olub-olmaması)
+smb2.cmd == 8
+
+# LLMNR 
+
+llmnr
+nbns ( NetBIOS )
+mdns ( Multi DNS )
+
+# HTTP Credential
+
+http.request.method == "POST"
+ftp.request.command == "USER" || ftp.request.command == "PASS"
+smtp.auth
+pop.request
+
+# Domain Infrastructure
+
+dns && !(dns.response)
+dns.qry.name contains "dc"
+ldap && ip.addr == <DC_IP>
+
+
+
+
 
