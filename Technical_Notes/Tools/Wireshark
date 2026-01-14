@@ -1,3 +1,17 @@
+# Common Syntaxis
+
+ip.addr == <IP> Source IP
+ip.dst == <IP> Destination IP
+tcp.port == <PORT> Source Port
+http ( HTTP Traffic )
+dns ( DNS Traffic )
+tcp.flags.syn == 1 && tcp.flags.ack == 0 ( SYN Scan detector )
+http.request.method == "POST"
+eth.addr == <MAC Address> ( Müəyyən MAC addresə görə filtrləmə )
+
+
+
+
 # NTLM Authentication
 
 ntlmssp
