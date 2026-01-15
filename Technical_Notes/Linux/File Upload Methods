@@ -24,3 +24,7 @@ wget http://LINUX_IP:<PORT>/file.txt
 
 pip3 install uploadserver
 python3 -m uploadserver 8000
+
+# SCP Update
+
+scp C:\Users\Administrator\Special-Tools\PowerHuntShares\PowerHuntShares.psm1  sako@192.168.0.250:/home/sako/Special-Tools/PowerHuntShares
