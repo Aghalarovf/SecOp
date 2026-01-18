@@ -29,6 +29,8 @@ Get-ChildItem -Recurse
 Get-ChildItem -Recurse -Include *.txt
 Select-String "password" *.txt
 Select-String -Path *.config -Pattern "pass"
+Get-ChildItem C:\ -Recurse -Filter david.txt -ErrorAction SilentlyContinue
+
 
 # Proseslər
 Get-Process
