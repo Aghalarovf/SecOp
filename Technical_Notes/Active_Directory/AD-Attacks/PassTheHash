@@ -21,3 +21,4 @@ Invoke-SMBExec -Target <TARGET_IP> -Domain <DOMAIN_NAME> -Username <USER> -Hash 
 
 
 
+
