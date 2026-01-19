@@ -35,6 +35,8 @@ xfreerdp /v:<IP> /u:user /pth:<NTLM_HASH>
 xfreerdp /v:<IP> /u:user /p:password
 xfreerdp /v:<IP> /u:domain\\user /p:password
 xfreerdp /v:<IP> /u:user /p:pass +clipboard +drives
+xfreerdp /v:<IP> /u:<USER> /p:'<PASSWORD>' /compression /gfx /network:modem /bpp:16 /themes /fonts /wallpaper
+
 
 nmap --script rdp-vuln-ms12-020 -p3389 <IP>
 searchsploit rdp
@@ -52,4 +54,5 @@ hydra
 crowbar
 metasploit
 searchsploit
+
 
