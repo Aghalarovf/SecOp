@@ -31,6 +31,13 @@ nmap -p53 <IP>
 nmap -p53 --script dns-* <IP>
 dig @<IP> version.bind CHAOS TXT
 
+nmap -sV -sC -p53 target_ip
+nmap -p53 --script dns-* target_ip
+
+dig @target_ip version.bind chaos txt
+dig @target_ip id.server chaos txt
+dig -x target_ip @target_ip
+
 nslookup example.com
 dig example.com
 nslookup example.com <IP>
@@ -89,6 +96,7 @@ PowerDNS
 /var/log/named/
 /var/log/syslog
 Windows Event Logs (DNS Server)
+
 
 
 
