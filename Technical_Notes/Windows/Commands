@@ -26,7 +26,7 @@ Add-Content file.txt "test2"
 
 # Axtarış
 Get-ChildItem -Recurse
-Get-ChildItem -Recurse -Include *.txt
+Get-ChildItem -Recurse -Include *.txt -ErrorAction SilentlyContinue
 Select-String "password" *.txt
 Select-String -Path *.config -Pattern "pass"
 Get-ChildItem C:\ -Recurse -Filter david.txt -ErrorAction SilentlyContinue
