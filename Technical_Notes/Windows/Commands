@@ -29,6 +29,7 @@ Get-ChildItem -Recurse
 Select-String "password" *.txt
 Select-String -Path *.config -Pattern "pass"
 Get-ChildItem C:\ -Recurse -Filter david.txt -ErrorAction SilentlyContinue
+Get-ChildItem -Path C:\ -Recurse -Include "*pcap*" -ErrorAction SilentlyContinue
 
 
 # Proseslər
