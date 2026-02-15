@@ -1,118 +1,182 @@
-Mərhələ 1: Protokolun Fundamental Strukturunun Öyrənilməsi
-[ ] 1. LDAP-ın Tarixi: X.500 standartını və "Lightweight" (yüngül) fəlsəfəsini başa düş.
+# LDAP Pentesting Learning Roadmap
 
-[ ] 2. Kataloq vs Database: Niyə LDAP-ın oxuma əməliyyatları üçün (R-heavy) optimallaşdırıldığını öyrən.
+---
 
-[ ] 3. Protocol Stack: LDAP-ın OSI modelində Layer 7 (Application) üzərindəki yerini analiz et.
+## Mərhələ 1: Protokolun Fundamental Strukturunun Öyrənilməsi
 
-[ ] 4. Default Portlar: 389 (LDAP), 636 (LDAPS), 3268 (Global Catalog) və 3269 (GC over SSL) fərqləri.
+- [ ] 1. LDAP-ın Tarixi  
+      X.500 standartını və "Lightweight" fəlsəfəsini başa düş.
 
-[ ] 5. ASN.1 və BER: LDAP paketlərinin kodlaşdırıldığı Abstract Syntax Notation One və Basic Encoding Rules prinsiplərini öyrən.
+- [ ] 2. Kataloq vs Database  
+      Niyə LDAP-ın oxuma əməliyyatları üçün (R-heavy) optimallaşdırıldığını öyrən.
 
-[ ] 6. LDIF Formatı: Məlumatın import/export edilməsi üçün istifadə olunan mətn formatı (LDAP Data Interchange Format).
+- [ ] 3. Protocol Stack  
+      LDAP-ın OSI modelində Layer 7 (Application) üzərindəki yerini analiz et.
 
-[ ] 7. RootDSE: Server haqqında ilkin kəşfiyyat məlumatlarını (naming contexts, capabilities) verən kök giriş.
+- [ ] 4. Default Portlar  
+      389 (LDAP), 636 (LDAPS), 3268 (Global Catalog) və 3269 (GC over SSL) fərqləri.
 
-[ ] 8. Naming Contexts: Domainin necə bölündüyünü (Configuration, Schema, Domain Partitions) anla.
+- [ ] 5. ASN.1 və BER  
+      LDAP paketlərinin kodlaşdırıldığı prinsipləri öyrən.
 
-==================================================================================================================================================================
+- [ ] 6. LDIF Formatı  
+      Məlumatın import/export edilməsi üçün istifadə olunan mətn formatı.
 
-Mərhələ 2: Data Modeli və Obyekt İerarxiyası
-[ ] 9. Entry (Giriş): Kataloqdakı ən kiçik obyekt vahidini anla.
+- [ ] 7. RootDSE  
+      Server haqqında ilkin kəşfiyyat məlumatlarını öyrən.
 
-[ ] 10. Attributes: cn, sn, uid, dc, ou, memberOf kimi ən çox istifadə olunan atributlar.
+- [ ] 8. Naming Contexts  
+      Domain bölünməsini (Configuration, Schema, Domain Partitions) anla.
 
-[ ] 11. Distinguished Name (DN): Obyektin unikal tam ünvanının sintaksisi.
+---
 
-[ ] 12. Relative Distinguished Name (RDN): DN içindəki tək bir komponent.
+## Mərhələ 2: Data Modeli və Obyekt İerarxiyası
 
-[ ] 13. Object Classes: top, person, organizationalUnit, computer kimi siniflərin irsiyyət (inheritance) sistemi.
+- [ ] 9. Entry (Giriş)  
+      Kataloqdakı ən kiçik obyekt vahidini anla.
 
-[ ] 14. Schema Analysis: Hansı atributun hansı obyektlə işləyə biləcəyini müəyyən edən qaydalar toplusu.
+- [ ] 10. Attributes  
+      cn, sn, uid, dc, ou, memberOf kimi atributlar.
 
-[ ] 15. DIT (Directory Information Tree): İerarxik ağac strukturunu vizuallaşdır.
+- [ ] 11. Distinguished Name (DN)  
+      Obyektin unikal tam ünvanının sintaksisi.
 
-[ ] 16. Operational Attributes: Normalda gizli olan (creatorsName, modifyTimestamp) atributların necə çağırılması.
+- [ ] 12. Relative Distinguished Name (RDN)  
+      DN içindəki tək komponent.
 
-==================================================================================================================================================================
+- [ ] 13. Object Classes  
+      top, person, organizationalUnit, computer sinifləri və irsiyyət sistemi.
 
-Mərhələ 3: LDAP Əməliyyatları (Operations)
-[ ] 17. Bind Operation (Simple): İstifadəçi adı və şifrə ilə sadə autentifikasiya.
+- [ ] 14. Schema Analysis  
+      Atribut və obyekt qaydalarını müəyyən edən struktur.
 
-[ ] 18. Anonymous Bind: Heç bir məlumat daxil etmədən girişin mümkünlüyü (Pentesting üçün kritikdir).
+- [ ] 15. DIT (Directory Information Tree)  
+      İerarxik ağac strukturunu vizuallaşdır.
 
-[ ] 19. SASL Bind: GSSAPI (Kerberos), DIGEST-MD5 kimi qabaqcıl autentifikasiya metodları.
+- [ ] 16. Operational Attributes  
+      Gizli atributların çağırılması.
 
-[ ] 20. Search Operation: Filter, Scope və Base DN anlayışlarını dərindən öyrən.
+---
 
-[ ] 21. Search Scope: Base (tək obyekt), OneLevel (bir alt səviyyə) və Subtree (bütün ağac).
+## Mərhələ 3: LDAP Əməliyyatları (Operations)
 
-[ ] 22. Unbind & Abandon: Sessiyanın bağlanması və davam edən sorğunun ləğvi.
+- [ ] 17. Bind Operation (Simple)  
+      İstifadəçi adı və şifrə ilə autentifikasiya.
 
-[ ] 23. Modify Operation: Mövcud atributların dəyişdirilməsi və ya silinməsi.
+- [ ] 18. Anonymous Bind  
+      Şifrəsiz girişin mümkünlüyü.
 
-[ ] 24. Add/Delete: Yeni entry-lərin yaradılması və idarə olunması.
+- [ ] 19. SASL Bind  
+      GSSAPI, DIGEST-MD5 kimi metodlar.
 
-==================================================================================================================================================================
+- [ ] 20. Search Operation  
+      Filter, Scope və Base DN anlayışları.
 
-Mərhələ 4: Pentesting və Enumeration Texnikaları
-[ ] 25. Null Session Testing: Şifrəsiz məlumat çəkmə imkanlarını yoxla.
+- [ ] 21. Search Scope  
+      Base, OneLevel və Subtree fərqləri.
 
-[ ] 26. User Enumeration: Bütün istifadəçi siyahısını və onların detallarını çəkmək.
+- [ ] 22. Unbind & Abandon  
+      Sessiyanın bağlanması və sorğunun ləğvi.
 
-[ ] 27. Group Membership: Kritik qrupların (Admins, Backup Operators) üzvlərini analiz etmək.
+- [ ] 23. Modify Operation  
+      Mövcud atributların dəyişdirilməsi.
 
-[ ] 28. LDAP Injection: Axtarış filtrlərinə *, (, & kimi simvollarla müdaxilə.
+- [ ] 24. Add/Delete  
+      Entry yaradılması və silinməsi.
 
-[ ] 29. UAC (User Account Control) Decoding: İstifadəçi statusunu (bağlı, şifrəsi vaxtı keçmiş və s.) bitmask ilə oxumaq.
+---
 
-[ ] 30. Password Policy Discovery: Şifrə uzunluğu, mürəkkəblik və lockout limitlərini öyrənmək.
+## Mərhələ 4: Pentesting və Enumeration Texnikaları
 
-[ ] 31. Service Principal Names (SPN): Kerberoasting hücumları üçün hədəf siyahısı toplamaq.
+- [ ] 25. Null Session Testing  
+      Şifrəsiz məlumat çəkmə imkanlarını yoxla.
 
-[ ] 32. Sensitive Data in Attributes: description, comment, info kimi sahələrdə unudulmuş şifrələri axtarmaq.
+- [ ] 26. User Enumeration  
+      İstifadəçi siyahısını toplamaq.
 
-[ ] 33. Domain Trust Discovery: Digər domainlərlə olan etibarlılıq əlaqələrini üzə çıxarmaq.
+- [ ] 27. Group Membership  
+      Kritik qrupların üzvlərini analiz etmək.
 
-[ ] 34. GPO Enumeration: Group Policy-lərin LDAP üzərindən necə göründüyünü anla.
+- [ ] 28. LDAP Injection  
+      Axtarış filtrlərinə müdaxilə texnikaları.
 
-==================================================================================================================================================================
+- [ ] 29. UAC Decoding  
+      İstifadəçi statusunu bitmask ilə oxumaq.
 
-Mərhələ 5: Qabaqcıl Funksionallıq və Təhlükəsizlik
-[ ] 35. LDAP Paged Results: 1000 entry limitini aşmaq üçün 1.2.840.113556.1.4.319 kontrolunu öyrən.
+- [ ] 30. Password Policy Discovery  
+      Şifrə siyasətlərini analiz etmək.
 
-[ ] 36. Server Side Sorting: Nəticələrin server tərəfində sıralanması.
+- [ ] 31. Service Principal Names (SPN)  
+      Kerberoasting üçün hədəflər toplamaq.
 
-[ ] 37. Referrals: Sorğunun avtomatik başqa bir Domain Controller-ə yönləndirilməsi (Handling referrals).
+- [ ] 32. Sensitive Data in Attributes  
+      description, comment və info sahələrini yoxlamaq.
 
-[ ] 38. StartTLS: Port 389 üzərində təhlükəsiz kanalın (TLS) açılması prosesi.
+- [ ] 33. Domain Trust Discovery  
+      Domainlər arası etibarlılığı analiz etmək.
 
-[ ] 39. Replication Metadata: Obyektin hansı DC-də yaradıldığını və nə vaxt dəyişdiyini görmək.
+- [ ] 34. GPO Enumeration  
+      Group Policy-lərin LDAP üzərindən görünməsi.
 
-[ ] 40. Capability Discovery: Serverin hansı LDAP versiyalarını və extension-ları dəstəklədiyini yoxla.
+---
 
-==================================================================================================================================================================
+## Mərhələ 5: Qabaqcıl Funksionallıq və Təhlükəsizlik
 
-Mərhələ 6: Tool Development (Kodlaşdırma)
-[ ] 41. Socket Setup: Seçdiyin dildə (Python, Go və ya C#) TCP/UDP socket əlaqəsi.
+- [ ] 35. LDAP Paged Results  
+      1000 entry limitini aşmaq.
 
-[ ] 42. LDAP Library Selection: ldap3 (Python) və ya goldap (Go) kimi kitabxanaların seçilməsi və ya sıfırdan yazılması.
+- [ ] 36. Server Side Sorting  
+      Server tərəfində sıralama.
 
-[ ] 43. Filter Builder: Dinamik axtarış filtrləri yaradan modul yazmaq.
+- [ ] 37. Referrals  
+      Sorğunun başqa serverə yönləndirilməsi.
 
-[ ] 44. Error Handling: LDAP Error 49 (invalid creds), Error 53 (unwilling to perform) və s. idarəetməsi.
+- [ ] 38. StartTLS  
+      Port 389 üzərində TLS açılması.
 
-[ ] 45. Multi-threading: Eyni anda bir neçə naming context üzrə axtarış sürətləndirmə.
+- [ ] 39. Replication Metadata  
+      Obyekt dəyişiklik tarixçəsi.
 
-[ ] 46. Export Modulu: Nəticələri JSON, CSV və Greppable formatda çıxarmaq.
+- [ ] 40. Capability Discovery  
+      Serverin dəstəklədiyi LDAP versiyaları və extension-lar.
 
-[ ] 47. Interactive Shell: Tool daxilində canlı LDAP gəzintisi (Browsing) funksiyası.
+---
 
-[ ] 48. BloodHound Compatibility: Toplanan məlumatların BloodHound JSON formatına çevrilməsi.
+## Mərhələ 6: Tool Development (Kodlaşdırma)
 
-[ ] 49. Fuzzing & Testing: Tool-u Active Directory, OpenLDAP və 389 Directory Server üzərində sınaqdan keçir.
+- [ ] 41. Socket Setup  
+      TCP socket əlaqəsi qurmaq.
 
-[ ] 50. Optimization: Paged results və asinxron sorğularla performansı artır.
+- [ ] 42. LDAP Library Selection  
+      ldap3, goldap və ya sıfırdan implementasiya.
+
+- [ ] 43. Filter Builder  
+      Dinamik filter yaradan modul.
+
+- [ ] 44. Error Handling  
+      LDAP error kodlarının idarə olunması.
+
+- [ ] 45. Multi-threading  
+      Paralel axtarışların sürətləndirilməsi.
+
+- [ ] 46. Export Modulu  
+      JSON, CSV və Greppable çıxış.
+
+- [ ] 47. Interactive Shell  
+      Canlı LDAP browsing funksiyası.
+
+- [ ] 48. BloodHound Compatibility  
+      Məlumatların uyğun formata çevrilməsi.
+
+- [ ] 49. Fuzzing & Testing  
+      Fərqli LDAP serverlərində test.
+
+- [ ] 50. Optimization  
+      Asinxron sorğular və performans artırılması.
+
+---
+
+
 
 
 
