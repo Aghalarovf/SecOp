@@ -113,3 +113,8 @@ Mərhələ 6: Tool Development (Kodlaşdırma)
 [ ] 49. Fuzzing & Testing: Tool-u Active Directory, OpenLDAP və 389 Directory Server üzərində sınaqdan keçir.
 
 [ ] 50. Optimization: Paged results və asinxron sorğularla performansı artır.
+
+
+
+
+
