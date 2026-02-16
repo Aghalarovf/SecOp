@@ -44,6 +44,11 @@ smbclient -L //<IP> -N
 smbclient -L //172.16.119.10/ -U 'nexura.htb\Administrator'
 smbmap -H <IP>
 
+Toplu Endirmək
+smb> recurse ON
+smb> prompt OFF
+smb> get *
+
 # Authenticated share enum
 smbmap -H <IP> -u user -p pass
 smbmap -H <IP> -u user -p pass -R
@@ -103,5 +108,6 @@ nmap
 impacket (psexec, wmiexec, smbexec)
 metasploit
 s check NULL session first
+
 
 
