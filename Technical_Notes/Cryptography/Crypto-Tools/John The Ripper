@@ -22,6 +22,9 @@ john ssh.hash
 4)pdf2john file.pdf > pdf.hash
 john pdf.hash
 
+5)pwsafe2john file.psafe3 > psafe.hash
+john psafe.hash
+
 
 
 john hash.txt
