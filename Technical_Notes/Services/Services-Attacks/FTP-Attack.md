@@ -46,6 +46,30 @@ hydra -L ftp_users.txt -p testpass ftp://<target_ip> -t 200 -f -V  # -f ilk succ
 hydra -l ":)" -p any ftp://<target_ip>  # Backdoor user
 ```
 
+# FTP
+
+## Connect FTP Server
+
+```bash
+# Basic Syntaxis
+ftp 10.129.8.214
+
+# Different Port
+ftp 10.129.8.214 2121
+
+# Commands
+| `ls`    | cari qovluğun siyahısı   |
+| `dir`   | geniş siyahı             |
+| `pwd`   | serverdə cari qovluq     |
+| `cd`    | serverdə qovluq dəyişmək |
+| `lcd`   | lokal qovluq dəyişmək    |
+
+| `get file.txt` | serverdən lokal sistemə |
+| `put file.txt` | lokal sistemdən serverə |
+| `mget *`       | çoxlu fayl endirmək     |
+| `mput *`       | çoxlu fayl göndərmək    |
+
+
 
 
 
