@@ -41,6 +41,7 @@ getdompwinfo
 
 # List shares
 smbclient -L //<IP> -N
+smbclient -L //172.16.119.10/ -U 'nexura.htb\Administrator'
 smbmap -H <IP>
 
 # Authenticated share enum
@@ -102,4 +103,5 @@ nmap
 impacket (psexec, wmiexec, smbexec)
 metasploit
 s check NULL session first
+
 
