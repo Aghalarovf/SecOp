@@ -214,7 +214,51 @@ srvinfo
 getdompwinfo
 ```
 
-# 5. İmpacket
+# 5. Enum4linux
+
+```bash
+# Basic enumeration
+enum4linux 10.10.10.10
+
+# Anonymous enum
+enum4linux -a 10.10.10.10
+
+# With credentials
+enum4linux -u username -p password 10.10.10.10
+
+# Users only
+enum4linux -U 10.10.10.10
+
+# Groups only
+enum4linux -G 10.10.10.10
+
+# Shares only
+enum4linux -S 10.10.10.10
+
+# Password policy
+enum4linux -P 10.10.10.10
+
+# RID cycling
+enum4linux -r 10.10.10.10
+
+# OS information
+enum4linux -o 10.10.10.10
+
+# RID Cycling
+enum4linux -r 10.10.10.10
+
+# Password Policy Enumeration
+enum4linux -P 10.10.10.10
+
+# Share Enumeration
+enum4linux -S 10.10.10.10
+
+# Enum4linux-ng
+enum4linux-ng -u user -p pass 10.10.10.10
+enum4linux-ng 10.10.10.10 -A
+```
+
+# 6. İmpacket
 
 ```bash
 sudo apt install impacket-scripts
