@@ -66,6 +66,25 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 # Config backup download
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
 
+SELECT SYSTEM_USER;
+SELECT USER_NAME();
+SELECT IS_SRVROLEMEMBER('sysadmin');
+
+SELECT * FROM sys.database_role_members;
+EXEC sp_helpuser;
+
+SELECT distinct b.name
+FROM sys.server_permissions a
+JOIN sys.server_principals b
+ON a.grantor_principal_id = b.principal_id
+WHERE permission_name = 'IMPERSONATE';
+
+SELECT SYSTEM_USER;
+
+SELECT name, is_trustworthy_on
+FROM sys.databases;
+
+
 
 ================================================================= PostgreSQL =================================================================
 # Basic PostgreSQL detection
