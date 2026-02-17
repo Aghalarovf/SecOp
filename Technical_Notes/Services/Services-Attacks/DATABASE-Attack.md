@@ -88,6 +88,9 @@ EXEC sp_helpuser;
 1. SELECT distinct b.name FROM sys.server_permissions a JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE permission_name = 'IMPERSONATE';
 2. SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
 
+# Read Local Files
+1. SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
+
 SELECT name, is_trustworthy_on
 FROM sys.databases;
 
