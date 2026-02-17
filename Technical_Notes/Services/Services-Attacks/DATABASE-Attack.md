@@ -66,6 +66,17 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 # Config backup download
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
 
+# Commands
+SELECT name FROM sys.databases;
+USE dbname;
+SELECT name FROM sys.tables;
+SELECT * FROM table;
+
+SELECT name FROM sys.sql_logins;
+SELECT name FROM sys.database_principals;
+SELECT IS_SRVROLEMEMBER('sysadmin');
+SELECT * FROM sys.server_principals;
+
 SELECT SYSTEM_USER;
 SELECT USER_NAME();
 SELECT IS_SRVROLEMEMBER('sysadmin');
@@ -78,8 +89,6 @@ FROM sys.server_permissions a
 JOIN sys.server_principals b
 ON a.grantor_principal_id = b.principal_id
 WHERE permission_name = 'IMPERSONATE';
-
-SELECT SYSTEM_USER;
 
 SELECT name, is_trustworthy_on
 FROM sys.databases;
