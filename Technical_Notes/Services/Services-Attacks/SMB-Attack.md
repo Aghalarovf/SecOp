@@ -258,7 +258,24 @@ enum4linux-ng -u user -p pass 10.10.10.10
 enum4linux-ng 10.10.10.10 -A
 ```
 
-# 6. İmpacket
+# 6. Responder
+
+```bash
+sudo responder -I eth0
+
+sudo responder -I eth0 -rdw
+-r → NetBIOS poisoning
+-d → DHCP poisoning
+-w → WPAD rogue proxy
+
+# Stealth Mode
+sudo responder -I eth0 --disable-ess --disable-http --disable-smb 
+
+# Default Credential File
+/usr/share/responder/logs/
+```
+
+# 7. İmpacket
 
 ```bash
 sudo apt install impacket-scripts
