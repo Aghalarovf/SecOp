@@ -29,6 +29,14 @@ nmap -p445 --script smb2-time $IP
 nmap -iL targets.txt -p445 --script smb* -oA smb_enum
 ```
 
+# 1.1 Netexec
+
+```bash
+
+
+
+
+
 # 2. Smbclient
 
 ```bash
