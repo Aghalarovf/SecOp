@@ -141,7 +141,80 @@ smbmap -H 10.10.10.10 -u administrator -p password -x "whoami"
 smbmap -H 10.10.10.10 -u user -p password | grep WRITE
 ```
 
-# 4. İmpacket
+# 4. RPClient
+
+```bash
+# Anonymous bağlanma
+rpcclient -U "" 10.10.10.10
+
+# Username + password ilə
+rpcclient -U 'username%password' 10.10.10.10
+
+# Domain ilə
+rpcclient -U 'domain\\username%password' 10.10.10.10
+
+# AD-də bütün istifadəçiləri görmək
+enumdomusers
+
+# Local machine istifadəçiləri
+enumdomusers -R
+
+# Kullanıcı SID-lərini almaq
+lookupnames USERNAME
+
+# Domain qruplarını gör
+enumdomgroups
+
+# Bir istifadəçinin qrupları
+queryuser USERNAME
+
+# Qrup üzvlərini gör
+querygroup GROUPRID
+
+# SMB shares görmək
+netshareenum
+
+# Share permissions yoxlama
+netsharegetinfo SHARENAME
+
+# Password policy
+getdompwinfo
+
+# Last logon məlumatı
+queryuser USERNAME
+
+# Session-ları gör
+enumalsessions
+
+# ACL-ləri gör
+enumdomacl
+
+# GenericAll / WriteDACL hüququ varsa
+lookupsids USERNAME
+
+# Local groups
+enumlocalsgroups
+
+# Local users
+enumlocals
+
+# OS versiyası və patch
+srvinfo
+
+# SIDs tapmaq
+lookupnames USERNAME
+
+# Domain Controllers tapmaq
+getdominfo
+
+# RPC services-ləri gör
+srvinfo
+
+# Enum policies
+getdompwinfo
+```
+
+# 5. İmpacket
 
 ```bash
 sudo apt install impacket-scripts
