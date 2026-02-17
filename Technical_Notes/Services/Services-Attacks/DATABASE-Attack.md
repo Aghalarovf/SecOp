@@ -84,6 +84,7 @@ SELECT IS_SRVROLEMEMBER('sysadmin');
 SELECT * FROM sys.database_role_members;
 EXEC sp_helpuser;
 
+# IMPERSONATE Permission
 SELECT distinct b.name FROM sys.server_permissions a JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE permission_name = 'IMPERSONATE';
 
 SELECT name, is_trustworthy_on
