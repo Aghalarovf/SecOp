@@ -120,4 +120,11 @@ nmap -p 6379 --script redis-brute --script-args redisuser='default',redispassdb=
 # Check for RCE via CONFIG (common misconfig)
 nmap -p 6379 --script redis-info --script-args redisusername='',redispassword='' <target>
 
+
+nmap -p 3306,1433,5432,27017,6379 --script "mysql-*","ms-sql-*","postgres-*","mongodb-*","redis-*" <target> \
+  --script-args="userdb=/path/to/users.txt,passdb=/path/to/pass.txt"
 ```
+
+## Login
+
+```bash
