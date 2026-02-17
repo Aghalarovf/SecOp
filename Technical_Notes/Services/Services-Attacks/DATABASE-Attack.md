@@ -77,6 +77,11 @@ SELECT name FROM sys.database_principals;
 SELECT IS_SRVROLEMEMBER('sysadmin');
 SELECT * FROM sys.server_principals;
 
+# Run as Sysadmin
+EXECUTE AS LOGIN = 'sa'
+SELECT SYSTEM_USER
+SELECT IS_SRVROLEMEMBER('sysadmin')
+
 SELECT SYSTEM_USER;
 SELECT USER_NAME();
 SELECT IS_SRVROLEMEMBER('sysadmin');
