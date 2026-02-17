@@ -93,7 +93,9 @@ WHERE permission_name = 'IMPERSONATE';
 SELECT name, is_trustworthy_on
 FROM sys.databases;
 
+SELECT srvname, isremote FROM sysservers
 
+EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
 
 ================================================================= PostgreSQL =================================================================
 # Basic PostgreSQL detection
