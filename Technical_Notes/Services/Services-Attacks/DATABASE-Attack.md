@@ -128,3 +128,106 @@ nmap -p 3306,1433,5432,27017,6379 --script "mysql-*","ms-sql-*","postgres-*","mo
 ## Login
 
 ```bash
+# Connect
+mysql -h <host> -P 3306 -u <user> -p<pass>
+
+# Basic connections
+mysql -u root -p                    # Local root
+mysql -h 192.168.1.100 -u admin -p  # Remote
+
+# Enum databases
+SHOW DATABASES;
+SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA;
+
+# Enum tables
+USE <dbname>;
+SHOW TABLES;
+SELECT table_name FROM information_schema.tables WHERE table_schema = '<dbname>';
+
+# Enum columns
+DESCRIBE <table>;
+SHOW COLUMNS FROM <table>;
+SELECT column_name FROM information_schema.columns WHERE table_name = '<table>';
+
+# Enum users
+SELECT user,host FROM mysql.user;
+SELECT User,authentication_string FROM mysql.user;
+
+# Dump data
+SELECT * FROM <table> LIMIT 10;
+SELECT * FROM <table> INTO OUTFILE '/tmp/dump.txt';
+
+# Privilege enum
+SHOW GRANTS FOR 'user'@'host';
+SELECT * FROM mysql.user WHERE User='<username>';
+
+==================================================================================================================================================================
+
+# Connect syntax
+sqlcmd -S <server>,1433 -U <user> -P <pass> -d <database>
+
+# Examples
+sqlcmd -S 192.168.1.100 -U sa -P P@ssw0rd
+sqlcmd -S localhost -E                 # Windows auth
+
+# Enum databases
+SELECT name FROM sys.databases;
+SELECT name FROM master..sysdatabases;
+
+# Enum tables
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE';
+SELECT name FROM sysobjects WHERE xtype='U';
+
+# Enum columns
+SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='<table>';
+sp_columns <table>;
+
+# Enum users
+SELECT name FROM sys.server_principals;
+SELECT name,password_hash FROM sys.sql_logins;
+
+# Dump data
+SELECT TOP 10 * FROM <table>;
+xp_cmdshell 'whoami';                  # RCE if enabled
+
+# Enable xp_cmdshell
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+
+==================================================================================================================================================================
+
+# Install: pip install mycli
+mycli -h <host> -P 3306 -u <user> -p
+
+# Fuzzy search + syntax highlighting
+# Use ↑↓ for history, TAB for autocomplete
+
+# Quick enum aliases (built-in)
+.tables                 # Show tables
+.fields <table>         # Show columns
+.use <db>              # Switch database
+.showdb                # Show databases
+
+# Export results
+.mycli --csv results.csv
+
+==================================================================================================================================================================
+
+# Connection Properties:
+Host: <ip>    Port: 3306/1433
+Username: <user>    Password: <pass>
+Database: <optional>
+
+# Quick Queries (F5 to execute):
+-- MySQL
+SHOW DATABASES;
+SELECT table_name FROM information_schema.tables;
+
+-- MSSQL  
+SELECT name FROM sys.databases;
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES;
+
+==================================================================================================================================================================
+
+
+
