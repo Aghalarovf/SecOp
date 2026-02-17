@@ -40,6 +40,7 @@ nmap -p 3306 --script mysql-brute --script-args userdb=users.txt,passdb=password
 # SQL injection testing
 nmap -p 3306 --script mysql-sql-injection <target>
 
+
 ================================================================= MSSQL =================================================================
 # Basic MSSQL detection & version
 nmap -p 1433 --script ms-sql-info <target>
@@ -65,6 +66,7 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 # Config backup download
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
 
+
 ================================================================= PostgreSQL =================================================================
 # Basic PostgreSQL detection
 nmap -p 5432 --script postgres-info <target>
@@ -84,6 +86,7 @@ nmap -p 5432 --script postgres-roles --script-args postgresuser='postgres',postg
 # Dump config files
 nmap -p 5432 --script postgres-config --script-args postgresuser='postgres',postgrespass='pass' <target>
 
+
 ================================================================= MongoDB =================================================================
 # Basic MongoDB detection
 nmap -p 27017 --script mongodb-info <target>
@@ -99,6 +102,7 @@ nmap -p 27017 --script mongodb-brute --script-args mongodbuserdb=users.txt,mongo
 
 # Check accessible collections
 nmap -p 27017 --script mongodb-databases --script-args mongodbusername='admin',mongodbdatabase='admin' <target>
+
 
 ================================================================= Redis =================================================================
 # Basic Redis detection
