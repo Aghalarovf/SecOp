@@ -157,6 +157,21 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 
 # Config backup download
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
+
+
+sqlcmd -S SERVERNAME -E
+sqlcmd -S tcp:10.0.0.5,1433 -E
+
+sqlcmd -S SERVER -U username -P password
+sqlcmd -S 10.0.0.5 -U sa -P password
+
+nc -nv 10.0.0.5 1433
+
+mssql-cli -S 10.0.0.5 -U sa -P password
+impacket-mssqlclient domain/user:password@10.0.0.5
+
+
+
 ```
 
 
