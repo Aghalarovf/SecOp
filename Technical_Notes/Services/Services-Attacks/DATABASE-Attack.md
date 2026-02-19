@@ -204,6 +204,12 @@ SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
 
 -- Trustworthy DBs
 SELECT name, is_trustworthy_on FROM sys.databases;
+TRUSTWORTHY ON olduqda, database içindəki kod server səviyyəsində etibar edilə bilər.
+
+SELECT name AS database_name, SUSER_SNAME(owner_sid) AS owner_login FROM sys.databases;
+SELECT name, SUSER_SNAME(owner_sid) FROM sys.databases;
+Database owner tapmaq
+
 
 -- Linked servers
 SELECT srvname, isremote FROM sysservers;
