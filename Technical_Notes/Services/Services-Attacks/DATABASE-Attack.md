@@ -69,7 +69,7 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
 ```
 
-## Commands
+### MSSQL Exploitation Commands
 
 ```bash
 ### Account Check
