@@ -15,10 +15,9 @@
 
 # 1. Nmap
 
-## Identify Current Domain Context
+## MySQL
 
 ```bash
-================================================================= MySQL =================================================================
 # Basic version & service detection
 nmap -p 3306 --script mysql-info,mysql-variables <target>
 
@@ -39,9 +38,12 @@ nmap -p 3306 --script mysql-brute --script-args userdb=users.txt,passdb=password
 
 # SQL injection testing
 nmap -p 3306 --script mysql-sql-injection <target>
+```
 
 
-================================================================= MSSQL =================================================================
+## MSSQL
+
+```bash
 # Basic MSSQL detection & version
 nmap -p 1433 --script ms-sql-info <target>
 
@@ -102,8 +104,11 @@ FROM sys.databases;
 SELECT srvname, isremote FROM sysservers
 
 EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [10.0.0.12\SQLEXPRESS]
+```
 
-================================================================= PostgreSQL =================================================================
+## PostgreSQL
+
+```bash
 # Basic PostgreSQL detection
 nmap -p 5432 --script postgres-info <target>
 
@@ -121,9 +126,11 @@ nmap -p 5432 --script postgres-roles --script-args postgresuser='postgres',postg
 
 # Dump config files
 nmap -p 5432 --script postgres-config --script-args postgresuser='postgres',postgrespass='pass' <target>
+```
 
+## MongoDB
 
-================================================================= MongoDB =================================================================
+```bash
 # Basic MongoDB detection
 nmap -p 27017 --script mongodb-info <target>
 
@@ -138,9 +145,11 @@ nmap -p 27017 --script mongodb-brute --script-args mongodbuserdb=users.txt,mongo
 
 # Check accessible collections
 nmap -p 27017 --script mongodb-databases --script-args mongodbusername='admin',mongodbdatabase='admin' <target>
+```
 
+## Redis
 
-================================================================= Redis =================================================================
+```bash
 # Basic Redis detection
 nmap -p 6379 --script redis-info <target>
 
