@@ -49,15 +49,20 @@ fierce --domain target.com --subdomains /usr/share/wordlists/dnsmap.txt -o fierc
 # DNSrecon brute
 dnsrecon -d target.com -D /usr/share/wordlists/dnsmap.txt -t brt -j results.json
 
-```
-```bash
-(subfinder -d target.com -silent -t 100; \
- fierce --domain target.com -wordlist /usr/share/wordlists/dnsmap.txt -silent; \
- subbrute target.com /usr/share/wordlists/dnsmap.txt -t 50) | \
- sort -u > all-subdomains.txt
+ffuf -u http://target.com -H "Host: FUZZ.target.com" \
+     -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt \
+     -fs 0 -t 100 -o vhost-http.json
 
+-fs SIZE      # Filter by response size
+-fw WORDS     # Filter by word count  
+-fl LINES     # Filter by line count
+-mc 200,301   # Match status codes only
+-H "Host: X"  # Custom Host header
+-k            # Ignore SSL errors
+-t 100        # 100 threads
+-o file.json  # JSON output
+-rate 10      # Requests per second
 
-cat all-subdomains.txt | httpx -silent -o live-subdomains.txt
 ```
 
 # DNS Zone Transfer & VHOST Discovery
