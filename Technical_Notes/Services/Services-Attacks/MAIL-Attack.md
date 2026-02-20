@@ -10,7 +10,7 @@
 # Enumeration
 
 ```bash
-sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 --script smtp-commands,smtp-enum-users,smtp-open-relay,smtp-auth-methods 10.129.14.128
+sudo nmap -Pn -sV -sC -p25,143,110,465,587,993,995 --script smtp-commands,smtp-enum-users,smtp-open-relay 10.129.14.128
 nmap -p25 -Pn --script smtp-open-relay 10.10.11.213
 
 # SMTP Connected
