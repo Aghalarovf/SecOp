@@ -50,7 +50,7 @@ python3 subbrute.py -p hədəf.com > resolved_subs.txt
 fierce --domain target.com --subdomains /usr/share/wordlists/dnsmap.txt -o fierce.txt
 
 # DNSrecon brute
-dnsrecon -d target.com -D /usr/share/wordlists/dnsmap.txt -t brt -j results.json
+dnsrecon -d inlanefreight.htb -D /usr/share/wordlists/seclists/Discovery/DNS/subdomains-top1million-20000.txt -t brt -j results.json
 
 ffuf -u http://target.com -H "Host: FUZZ.target.com" \
      -w /usr/share/wordlists/SecLists/Discovery/DNS/subdomains-top1million-5000.txt \
