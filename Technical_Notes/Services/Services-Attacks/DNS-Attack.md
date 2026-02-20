@@ -26,6 +26,9 @@ dig ANY hədəf.com +noall +answer
 ```bash
 --- Passive ---
 
+# Config Special DNS Server
+/etc/resolv.conf --> nameserver 10.10.10.10
+
 # Subfinder (fastest, passive)
 subfinder -d target.com -all -o subdomains.txt -t 100 -silent
 
