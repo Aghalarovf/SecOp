@@ -4,9 +4,8 @@
 
 # Mail Protocols
 
-```
 <img width="1012" height="456" alt="image" src="https://github.com/user-attachments/assets/aeaaac44-2df9-47b0-b468-e56ad55c1cc6" />
-```
+
 
 # Nmap
 
