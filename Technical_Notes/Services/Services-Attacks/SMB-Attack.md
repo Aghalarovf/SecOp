@@ -219,6 +219,37 @@ srvinfo             # Server info
 netshareenumall     # Paylaşılan klasörler
 enumshares          # Shares
 lsaenumsecrets      # LSA secrets (service passwords!)
+
+# Local Enumeration
+enumdomusers=0     # Lokal users (domain=0)
+enumdomgroups=0    # Lokal groups  
+queryuser 500      # Administrator (RID 500)
+queryuser 501      # Guest
+queryuser 1000     # First user
+querygroup 513     # Domain Users (lokal)
+querygroup 514     # Domain Guests
+lookupnames administrator
+lookupnames guest
+
+srvinfo             # Server info (hostname,OS)
+netshareenum        # Lokal shares
+enumshares          # Paylaşılan klasörler
+getusername         # Bağlı username
+
+enumdompolicies=1   # Lokal policies
+getdompwinfo        # Lokal password policy
+lsaenumaccountspolicy  # Account policy
+lsaenumprivs        # Local privileges
+lsaqueryinfopol     # LSA policy info
+
+srvinfo
+enumdomusers=0 2
+enumdomgroups=0 2  
+queryuser 500
+queryuser 501
+getdompwinfo
+netshareenum
+lsaenumaccountspolicy
 ```
 
 # 5. Enum4linux
