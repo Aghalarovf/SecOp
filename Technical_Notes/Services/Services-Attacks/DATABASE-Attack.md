@@ -170,9 +170,8 @@ nc -nv 10.0.0.5 1433
 
 mssql-cli -S 10.0.0.5 -U sa -P password
 impacket-mssqlclient domain/user:password@10.0.0.5
-
-
-
+python3 /usr/share/doc/python3-impacket/examples/mssqlclient.py fiona@10.129.203.10 -windows-auth
+python3 /usr/share/doc/python3-impacket/examples/mssqlclient.py inlanefreight/fiona@10.129.203.10 -windows-auth
 ```
 
 
