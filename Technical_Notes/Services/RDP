@@ -37,8 +37,8 @@ xfreerdp /v:<IP> /u:domain\\user /p:password
 xfreerdp /v:<IP> /u:user /p:pass +clipboard +drives
 xfreerdp /v:<IP> /u:<USER> /p:'<PASSWORD>' /compression /gfx /network:modem /bpp:16 /themes /fonts /wallpaper
 
-proxychains4 -f /home/kali/Tools/proxychains4.conf xfreerdp3 /u:<USER> /p:<PASS> /d:<DOMAIN> /v:<IP> /cert:ignore \
-/dynamic-resolution "/drive:<FOLDER_NAME,/media/FOLDER_NAME"
+xfreerdp /u:Fiona /p:'48Ns72!bns74@S84NNNSl' /d:inlanefreight.htb /v:10.129.203.10 /cert:ignore \
+/dynamic-resolution "/drive:Labaratory,/home/sako/Labaratory"
 
 
 nmap --script rdp-vuln-ms12-020 -p3389 <IP>
@@ -168,5 +168,6 @@ RESULTS_FILE="rdp_enum_$(date +%Y%m%d_%H%M%S).txt"
 echo -e "\n${GREEN}[+] Results saved: $RESULTS_FILE${NC}"
 
 echo -e "${BLUE}[*] RDP Enumeration Complete!${NC}"
+
 
 
