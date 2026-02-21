@@ -194,65 +194,31 @@ rpcclient -U 'username%password' 10.10.10.10
 # Domain ilə
 rpcclient -U 'domain\\username%password' 10.10.10.10
 
-# AD-də bütün istifadəçiləri görmək
-enumdomusers
+enumdomusers            # Tüm domain user'ları listele
+enumdomgroups           # Tüm domain grupları
+queryuser <RID>         # User info (RID=500,501,1000 vs)
+querygroup <RID>        # Group info
+enumalsgroups domain    # Domain alias grupları
+lookupnames <username>  # Username RID bul
+lookupsids <SID>        # SID username bul
+enumdompolicies         # Domain policy info
+getdompwinfo            # Domain password policy (LM/NT hash policy)
+querypolicy <policyID>  # Policy detayları
+dsroledomains           # Domain roles
+enumtrusts              # Trust relationships
 
-# Local machine istifadəçiləri
-enumdomusers -R
+enumdomusers 2          # User info + RID
+enumdomgroups 2         # Group info + RID
+getdompwinfo            # Password policy (kritik!)
+queryuser 500           # Administrator info
+querygroup 512          # Domain Admins
+lookupnames administrator
 
-# Kullanıcı SID-lərini almaq
-lookupnames USERNAME
-
-# Domain qruplarını gör
-enumdomgroups
-
-# Bir istifadəçinin qrupları
-queryuser USERNAME
-
-# Qrup üzvlərini gör
-querygroup GROUPRID
-
-# SMB shares görmək
-netshareenum
-
-# Share permissions yoxlama
-netsharegetinfo SHARENAME
-
-# Password policy
-getdompwinfo
-
-# Last logon məlumatı
-queryuser USERNAME
-
-# Session-ları gör
-enumalsessions
-
-# ACL-ləri gör
-enumdomacl
-
-# GenericAll / WriteDACL hüququ varsa
-lookupsids USERNAME
-
-# Local groups
-enumlocalsgroups
-
-# Local users
-enumlocals
-
-# OS versiyası və patch
-srvinfo
-
-# SIDs tapmaq
-lookupnames USERNAME
-
-# Domain Controllers tapmaq
-getdominfo
-
-# RPC services-ləri gör
-srvinfo
-
-# Enum policies
-getdompwinfo
+getusername         # Bağlı user
+srvinfo             # Server info
+netshareenumall     # Paylaşılan klasörler
+enumshares          # Shares
+lsaenumsecrets      # LSA secrets (service passwords!)
 ```
 
 # 5. Enum4linux
