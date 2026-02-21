@@ -201,6 +201,7 @@ EXEC ('sp_configure ''show advanced options'', 1') AT [LOCAL.TEST.LINKED.SRV]
 EXEC ('RECONFIGURE') AT [LOCAL.TEST.LINKED.SRV]
 EXEC ('sp_configure ''xp_cmdshell'',1') AT [LOCAL.TEST.LINKED.SRV]
 EXEC ('RECONFIGURE') AT [LOCAL.TEST.LINKED.SRV]
+EXEC ('xp_cmdshell ''whoami''') AT [LOCAL.TEST.LINKED.SRV]
 
 # Lokal Server üzərindən 
 EXEC sp_configure 'show advanced options', 1; RECONFIGURE;
